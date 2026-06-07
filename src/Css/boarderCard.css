@@ -1,0 +1,19 @@
+.BoarderCard{
+   width: 400px;
+}
+@media(max-width: 768px){
+    .data-of-project{
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .maincard{
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+
+    }
+    .item{
+        width: 100%;
+    }
+}
