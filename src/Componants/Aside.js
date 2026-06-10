@@ -1,7 +1,8 @@
 import { DataContext } from "../Context/ApiContext";
 import { useContext } from "react";
 export default function Aside({category,SetCategory}){
- const {categories } = useContext(DataContext);
+ const {hasBook } = useContext(DataContext);
+ console.log(hasBook)
 return(<>
  <aside className="sidebar">
         <h2 className="sidebar-title">Categories</h2>
@@ -12,7 +13,7 @@ return(<>
           >
             All Books
           </li>
-          {categories.map((cat) => (
+          {hasBook?.map((cat) => (
             <li
               key={cat.id}
               className={`category-item ${category == cat.id ? "active" : ""}`}

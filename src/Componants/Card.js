@@ -8,13 +8,14 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import "../Css/Cards.css";
 import { Link } from 'react-router-dom';
+import IconButton from "@mui/material/IconButton";
+import DeleteIcon from "@mui/icons-material/Delete";
 
-export default function OutlinedCard({ book }) {
- 
+export default function OutlinedCard({ book,handleClickOpen }) {
+
   const imageBaseUrl = "http://127.0.0.1:8000/storage/book_image/";
-
   const defaultImage = "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?q=80&w=1000&auto=format&fit=crop";
-
+  
   return (
     <Box className="card-wrapper">
       <Card className="card" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
@@ -48,6 +49,10 @@ export default function OutlinedCard({ book }) {
               View Details
             </Link>
           </Button>
+
+           <IconButton sx={{ color: "red" }} aria-label="delete" onClick={() => handleClickOpen(book.id)}>
+                      <DeleteIcon />
+                    </IconButton>
         </CardActions>
       </Card>
     </Box>

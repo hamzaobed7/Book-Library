@@ -36,6 +36,7 @@ export default function AppRoutes() {
            <Route path="/AddAuthor" element={<AddAuthor />} />
            <Route path="/UpdateAuthor" element={<UpdateAuthor />} />
            <Route path="/GetAllCategory" element={<GetAllCategory/>} />
+
             <Route path="/MyProfile" element={<Profile/>} />
               <Route path="/Stock" element={<StockManagement/>}/>
            <Route path="/" element={<Navigate to="/dashboard" replace />} />

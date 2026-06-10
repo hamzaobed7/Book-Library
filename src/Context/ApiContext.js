@@ -5,13 +5,22 @@ export default function DataProvider({ children }) {
   const [categories, setCategories] = useState([]);
   const [authors, setAuthors] = useState([]);
    const [Stock, setStock] = useState([]);
+   const [StockCount, setStockCount] = useState([]);
+   const [hasBook, setHasBook] = useState([]);
+   const [users,setUsers]=useState();
+   const [hasNoBook, setHasNoBook] = useState([]);
   const [books, setBook] = useState([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     const loadData=async()=>{
       setLoading(true)
     try{
-      await Promise.all([fetchAuthors(),fetchBooks(),fetchCategories(),fetchStocks()])
+      await Promise.all([fetchAuthors(),
+        fetchBooks(),fetchCategories(),
+        fetchStocks(),FetechCategoryHasBook()
+        ,FetechAuthorHasNoBook(),FetechUsersCount(),
+        FetechStockCount()
+      ])
       
     }
     catch(error){
@@ -63,10 +72,54 @@ export default function DataProvider({ children }) {
     }
   };
 
+  const FetechCategoryHasBook=async()=>{
+try{
+  const responce=await api.get("/categoryhasbooks");
+setHasBook(responce.data);
+}
+catch(err){
+  console.log(err);
+}
+
+  }
+
+ const FetechAuthorHasNoBook=async()=>{
+try{
+  const responce=await api.get("/Counts/hasNobook");
+  setHasNoBook(responce.data);
+}
+catch(err){
+  console.log(err);
+}
+
+  }
+
+
+const FetechUsersCount=async()=>{
+try{
+  const responce=await api.get("/Counts/users");
+  setUsers(responce.data);
+}
+catch(err){
+  console.log(err);
+}
+
+  }
+
+const FetechStockCount=async()=>{
+try{
+  const responce=await api.get("/Counts/AddStock");
+  setStockCount(responce.data);
+}
+catch(err){
+  console.log(err);
+}
+
+  }
 
   const bookCount = books.length;
   const AuthorCount = authors.length;
   const CategoryCount = categories.length;
   
-  return <DataContext.Provider value={{ categories,Stock,authors, fetchStocks ,books, loading,bookCount,AuthorCount,fetchAuthors,CategoryCount,fetchCategories,fetchBooks }}>{children}</DataContext.Provider>;
+  return <DataContext.Provider value={{ StockCount,users,hasNoBook,categories,Stock,authors, FetechCategoryHasBook,hasBook,fetchStocks ,books, loading,bookCount,AuthorCount,fetchAuthors,CategoryCount,fetchCategories,fetchBooks }}>{children}</DataContext.Provider>;
 }

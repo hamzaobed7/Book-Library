@@ -9,9 +9,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import DraggableDialog from "../Componants/Contest";
 
 export default function GetAllAuthors() {
-  // 1. اسحب دالة جلب البيانات من الـ Context (تأكد من اسمها لديك، لنفرض أنها fetchAuthors)
   const { authors, fetchAuthors } = useContext(DataContext);
-  
   const [open, setOpen] = useState(false);
   const [opens, setOpens] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
