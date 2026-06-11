@@ -1,21 +1,26 @@
 import { useState, useContext } from "react";
 import { DataContext } from "../Context/ApiContext";
 import api from "../api/axios";
-import { Box, Autocomplete, TextField, CircularProgress } from "@mui/material";
+import { CircularProgress } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SimpleSnackbar from "../Componants/Snakbar";
+import SelectionItem from "../Componants/SelectionItem";
+import AutoComplete from './../Componants/AutoComplete';
 
-export default function DeleteCollections() {
-  // جعل الحالة الافتراضية تبدأ من الـ Author للتجريب فوراً
+export default function DeleteMultiElement() {
   const [selection, setSelection] = useState("Author");
-
   const [selectedItems, setSelectedItems] = useState([]);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [open, setOpen] = useState(false);
 
-  const { books = [], authors = [], categories = [], fetchBooks, fetchAuthors, fetchCategories } = useContext(DataContext);
+  const { books = [], authors = [], fetchBooks, fetchAuthors, fetchCategories } = useContext(DataContext);
 
+  const handleClick = () => setOpen(true);
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") return;
+    setOpen(false);
+  };
   let options = [];
   let placeholderText = "";
   let getOptionLabelFunc = (option) => "";
@@ -28,10 +33,6 @@ export default function DeleteCollections() {
     options = authors;
     placeholderText = "Search and select authors to delete...";
     getOptionLabelFunc = (option) => (option.first_name ? `${option.first_name} ${option.last_name || ""}` : option.name || "");
-  } else if (selection === "Category") {
-    options = categories;
-    placeholderText = "Search and select categories to delete...";
-    getOptionLabelFunc = (option) => option.name || "";
   }
 
   const handleSelectionChange = (e) => {
@@ -53,19 +54,18 @@ export default function DeleteCollections() {
 
     try {
       const idsToDelete = selectedItems.map((item) => item.id);
-    
-      // إرسال المصفوفة عبر الـ body إلى المسار المستهدف لتجربة الـ Author
-      await api.delete('/deleteMulti', {
+      let element = selection === "Author" ? "/deletemulti/author" : "/deletemulti/books";
+
+      await api.delete(element, {
         data: { ids: idsToDelete },
       });
 
-      // استدعاء دالة التحديث الخاصة بالمؤلفين بناءً على اختيارك الحالي
       if (selection === "Author" && fetchAuthors) fetchAuthors();
       if (selection === "Book" && fetchBooks) fetchBooks();
       if (selection === "Category" && fetchCategories) fetchCategories();
 
-      setSnackbarMessage(`${selection}(s) Deleted Successfully`);
-      setOpenSnackbar(true);
+      setSnackbarMessage(`${selection}(s) Deleted Successfully ${<DeleteIcon/>} `);
+      setOpen(true);
       setSelectedItems([]);
     } catch (error) {
       console.error("Delete Error:", error.response?.data || error.message);
@@ -81,14 +81,16 @@ export default function DeleteCollections() {
         <form className="form" onSubmit={handleDelete}>
           <h1 style={{ color: "#ef4444", marginBottom: "20px" }}>Delete Collections</h1>
 
-          <label style={{ display: "block", fontSize: "14px", color: "#4a5568", marginBottom: "5px", textAlign: "left" }}>Select Type to Delete:</label>
-          <select value={selection} onChange={handleSelectionChange} className="Select-form" disabled={isDeleting} style={{ marginBottom: "20px" }}>
-            <option value="Author">Authors</option>
-            <option value="Book">Books</option>
-            <option value="Category">Categories</option>
-          </select>
+          <SelectionItem selection={selection} handleSelectionChange={handleSelectionChange} isDeleting={isDeleting} />
 
-          
+          <AutoComplete
+            placeholderText={placeholderText}
+            isDeleting={isDeleting}
+            options={options}
+            selectedItems={selectedItems}
+            setSelectedItems={setSelectedItems} 
+            getOptionLabelFunc={getOptionLabelFunc}
+          />
 
           <button
             type="submit"
@@ -123,14 +125,7 @@ export default function DeleteCollections() {
         </form>
       </div>
 
-      <SimpleSnackbar
-        message={snackbarMessage}
-        handleClick={() => setOpenSnackbar(true)}
-        handleClose={(e, reason) => {
-          if (reason !== "clickaway") setOpenSnackbar(false);
-        }}
-        open={openSnackbar}
-      />
+      <SimpleSnackbar message={snackbarMessage} color={"error"} handleClick={handleClick} handleClose={handleClose} open={open} />
     </>
   );
 }

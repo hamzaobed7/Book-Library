@@ -7,6 +7,8 @@ import PersonIcon from '@mui/icons-material/Person';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import EditIcon from '@mui/icons-material/Edit';
 import InventoryIcon from '@mui/icons-material/Inventory';
+import DeleteIcon from '@mui/icons-material/Delete';
+import SearchIcon from '@mui/icons-material/Search';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import {Link, useLocation } from "react-router-dom";
 const drawerWidth = 260;
@@ -23,6 +25,8 @@ export default function Drawers(){
     { text: "Add New Category", icon: <AddCircleIcon />, path: "/AddCategory" },
     { text: "All Category", icon: <MenuBookIcon />, path: "/GetAllCategory" },
     { text: "Update the Stock", icon: <InventoryIcon />, path: "/Stock" },
+    { text: "Delete Multi", icon: <DeleteIcon />, path: "/DeleteMulti" },
+    { text: "Search", icon: <SearchIcon/>, path: "/search" },
   ];
 return(<>
 <Drawer

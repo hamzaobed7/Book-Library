@@ -16,36 +16,38 @@ import AddCategory from "../Pages/AddCategory";
 import GetAllCategory from "../Pages/GetAllCategory";
 import BookDetiles from "../Pages/BookDetiles";
 import Profile from "../Pages/Profile";
+import DeleteMultiElement from "../Pages/DeleteMultiElement"
 import StockManagement from "../Pages/EditeIncreamntal";
+import SearchPage from "../Pages/Search"
 export default function AppRoutes() {
   return (
     <Routes>
-        <Route element={<PublicRoute />}>
-         <Route path="/login" element={<Login />} />
-         <Route path="/signup" element={<Signup />} />
-       <Route path="/verify-otp" element={<VerifyOtp/>}/>
-       </Route>
-       <Route element={<ProtectedRoute />}>  
-         <Route element={<Home />}>
-         <Route path="/dashboard" element={<Dashboard/>} /> 
-           <Route path="/GetBooks" element={<GetAllBooks   />} />
-           <Route path="/UpdateBook" element={<UpdateBook />} />
-           <Route path="/AddBook" element={<AddBook />} />
-           <Route path="/AddCategory" element={<AddCategory/>} />
-           <Route path="/GetAuthor" element={<GetAllAuthors />} />
-           <Route path="/AddAuthor" element={<AddAuthor />} />
-           <Route path="/UpdateAuthor" element={<UpdateAuthor />} />
-           <Route path="/GetAllCategory" element={<GetAllCategory/>} />
+      <Route element={<PublicRoute />}>
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/verify-otp" element={<VerifyOtp />} />
+      </Route>
+      <Route element={<ProtectedRoute />}>
+        <Route element={<Home />}>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/GetBooks" element={<GetAllBooks />} />
+          <Route path="/UpdateBook" element={<UpdateBook />} />
+          <Route path="/AddBook" element={<AddBook />} />
+          <Route path="/AddCategory" element={<AddCategory />} />
+          <Route path="/GetAuthor" element={<GetAllAuthors />} />
+          <Route path="/AddAuthor" element={<AddAuthor />} />
+          <Route path="/UpdateAuthor" element={<UpdateAuthor />} />
+          <Route path="/GetAllCategory" element={<GetAllCategory />} />
+          <Route path="/DeleteMulti" element={<DeleteMultiElement />} />
+          <Route path="/MyProfile" element={<Profile />} />
+          <Route path="/Stock" element={<StockManagement />} />
+          <Route path="/search" element={<SearchPage />} />
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        </Route>
+        <Route path="/BookDetiles/:id" element={<BookDetiles />} />
+      </Route>
 
-            <Route path="/MyProfile" element={<Profile/>} />
-              <Route path="/Stock" element={<StockManagement/>}/>
-           <Route path="/" element={<Navigate to="/dashboard" replace />} />
-         </Route>
-        
-         <Route path="/BookDetiles/:id" element={<BookDetiles/>}/> 
-       </Route>
-     
-       <Route path="*" element={<Navigate to="/" replace />} />             
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }

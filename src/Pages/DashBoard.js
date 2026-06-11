@@ -13,6 +13,12 @@ import TableBooks from "../Componants/TableUpdateBooks";
 import Analysis from "../Componants/Analysis";
 import PersonIcon from '@mui/icons-material/Person';
 import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward';
+import Charts from "../Componants/Charts";
+const data = [
+  { month: 'January', books: 10 },
+  { month: 'February', books: 15 },
+  { month: 'March', books: 20 },
+];
 export default function Dashboard({ Bookc, AuthorC, user }) {
   const { bookCount, AuthorCount, CategoryCount,hasNoBook,users,StockCount } = useContext(DataContext);
   return (
@@ -62,7 +68,7 @@ export default function Dashboard({ Bookc, AuthorC, user }) {
             <TableBooks />
           </Grid>
           <Grid item xs={12} md={5}>
-            <Analysis />
+            <Charts data={data} />
           </Grid>
         </Grid>
       </section>

@@ -171,7 +171,7 @@ export default function AddBook() {
           <Box sx={{ display: "flex", flexDirection: "column", gap: "5px", alignItems: "flex-start" }}>
             <label style={{ fontSize: "14px", color: "#4a5568", textAlign: "left" }}>Book Cover Image:</label>
 
-            {/* تم ترتيب العناصر هنا أفقياً ليعرض مؤشر التحميل أو اسم الملف بجانب زر الرفع */}
+
             <Box sx={{ display: "flex", alignItems: "center", gap: "15px" }}>
               <Button
                 component="label"
@@ -193,7 +193,7 @@ export default function AddBook() {
                 <input type="file" accept="image/*" {...register("cover")} style={{ display: "none" }} />
               </Button>
 
-              {/* إذا كانت الاستمارة ترفع البيانات الآن، يظهر مؤشر التحميل بجانب زر الملف مع نص توضيحي */}
+   
               {isSubmitting && (
                 <Box sx={{ display: "flex", alignItems: "center", gap: "8px" }}>
                   <CircularProgress size={20} color="primary" />
