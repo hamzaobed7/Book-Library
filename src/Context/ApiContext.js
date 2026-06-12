@@ -4,34 +4,27 @@ export const DataContext = createContext();
 export default function DataProvider({ children }) {
   const [categories, setCategories] = useState([]);
   const [authors, setAuthors] = useState([]);
-   const [Stock, setStock] = useState([]);
-   const [StockCount, setStockCount] = useState([]);
-   const [hasBook, setHasBook] = useState([]);
-   const [users,setUsers]=useState();
-   const [hasNoBook, setHasNoBook] = useState([]);
+  const [Stock, setStock] = useState([]);
+  const [StockCount, setStockCount] = useState([]);
+  const [trendBook, SetTrendBook] = useState([]);
+  const [hasBook, setHasBook] = useState([]);
+  const [users, setUsers] = useState();
+  const [hasNoBook, setHasNoBook] = useState([]);
   const [books, setBook] = useState([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
-    const loadData=async()=>{
-      setLoading(true)
-    try{
-      await Promise.all([fetchAuthors(),
-        fetchBooks(),fetchCategories(),
-        fetchStocks(),FetechCategoryHasBook()
-        ,FetechAuthorHasNoBook(),FetechUsersCount(),
-        FetechStockCount()
-      ])
-      
-    }
-    catch(error){
-      console.log("Error data:",error)
-    }
-    finally{
-      setTimeout(()=>{
-        setLoading(false)
-      },1000);
-    }
-    }
+    const loadData = async () => {
+      setLoading(true);
+      try {
+        await Promise.all([fetchAuthors(), fetchBooks(), fetchCategories(), fetchStocks(), FetechCategoryHasBook(), FetechAuthorHasNoBook(), FetechUsersCount(), FetechStockCount(), FetechTake()]);
+      } catch (error) {
+        console.log("Error data:", error);
+      } finally {
+        setTimeout(() => {
+          setLoading(false);
+        }, 1000);
+      }
+    };
     loadData();
   }, []);
 
@@ -44,15 +37,14 @@ export default function DataProvider({ children }) {
     }
   };
 
-  const fetchBooks=async ()=>{
-    try{
-   const response = await api.get("/books")
-   setBook(response.data.data)
+  const fetchBooks = async () => {
+    try {
+      const response = await api.get("/books");
+      setBook(response.data.data);
+    } catch (error) {
+      console.error(error);
     }
-    catch(error){
-      console.error(error)
-    }
-  }
+  };
 
   const fetchAuthors = async () => {
     try {
@@ -63,7 +55,7 @@ export default function DataProvider({ children }) {
     }
   };
 
- const fetchStocks= async () => {
+  const fetchStocks = async () => {
     try {
       const response = await api.get("/remove_frome_remaining");
       setStock(response.data.data);
@@ -72,54 +64,80 @@ export default function DataProvider({ children }) {
     }
   };
 
-  const FetechCategoryHasBook=async()=>{
-try{
-  const responce=await api.get("/categoryhasbooks");
-setHasBook(responce.data);
-}
-catch(err){
-  console.log(err);
-}
+  const FetechCategoryHasBook = async () => {
+    try {
+      const responce = await api.get("/categoryhasbooks");
+      setHasBook(responce.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
-  }
+  const FetechAuthorHasNoBook = async () => {
+    try {
+      const responce = await api.get("/Counts/hasNobook");
+      setHasNoBook(responce.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
- const FetechAuthorHasNoBook=async()=>{
-try{
-  const responce=await api.get("/Counts/hasNobook");
-  setHasNoBook(responce.data);
-}
-catch(err){
-  console.log(err);
-}
+  const FetechUsersCount = async () => {
+    try {
+      const responce = await api.get("/Counts/users");
+      setUsers(responce.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
-  }
+  const FetechStockCount = async () => {
+    try {
+      const responce = await api.get("/Counts/AddStock");
+      setStockCount(responce.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
-
-const FetechUsersCount=async()=>{
-try{
-  const responce=await api.get("/Counts/users");
-  setUsers(responce.data);
-}
-catch(err){
-  console.log(err);
-}
-
-  }
-
-const FetechStockCount=async()=>{
-try{
-  const responce=await api.get("/Counts/AddStock");
-  setStockCount(responce.data);
-}
-catch(err){
-  console.log(err);
-}
-
-  }
-
+  const FetechTake = async () => {
+    try {
+      const response = await api.get("/treandBook");
+      SetTrendBook(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+ 
+ 
   const bookCount = books.length;
   const AuthorCount = authors.length;
   const CategoryCount = categories.length;
-  
-  return <DataContext.Provider value={{ StockCount,users,hasNoBook,categories,Stock,authors, FetechCategoryHasBook,hasBook,fetchStocks ,books, loading,bookCount,AuthorCount,fetchAuthors,CategoryCount,fetchCategories,fetchBooks }}>{children}</DataContext.Provider>;
+
+  return (
+    <DataContext.Provider
+      value={{
+        StockCount,
+        users,
+        hasNoBook,
+        categories,
+        Stock,
+        authors,
+        FetechCategoryHasBook,
+        hasBook,
+        fetchStocks,
+        books,
+        loading,
+        bookCount,
+        AuthorCount,
+        fetchAuthors,
+        CategoryCount,
+        fetchCategories,
+        fetchBooks,
+        trendBook
+      }}
+    >
+      {children}
+    </DataContext.Provider>
+  );
 }

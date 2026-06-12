@@ -10,7 +10,7 @@ const Footer = () => {
   };
 
   return (
-    <footer className="footer-container">
+    <footer id="About-section" className="footer-container">
       <div className="footer-content">
         <div className="footer-brand">
           <div className="footer-logo">
@@ -28,7 +28,7 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* أقسام الروابط */}
+        
         <div className="footer-links-grid">
           {Object.entries(footerData).map(([title, items]) => (
             <div key={title} className="footer-column">

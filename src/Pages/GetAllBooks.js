@@ -57,7 +57,7 @@ setSnak(true)
             : filterBook?.map((book, index) => {
                 return (
                   <div className="book-animated-card" key={book.id || index} style={{ "--delay": index }}>
-                    <OutlinedCard handleClickOpen={handleClickOpen} book={book} />
+                    <OutlinedCard state={true} handleClickOpen={handleClickOpen} book={book} />
                   </div>
                 );
               })}

@@ -1,14 +1,14 @@
-import AppBars from "../Layout/AppBars";
-import Drawers from "../Layout/Drawer";
-import { Box, CssBaseline } from "@mui/material";
-import { Outlet } from "react-router-dom";
+import { Outlet } from 'react-router-dom';
+import CollapsibleExample from "../Layout/Navbar";
+import Footer from "../Layout/Footer"
+import { CssBaseline } from '@mui/material';
+import Box from '@mui/material/Box';
 
-export default function Home() {
-  return (
-    <Box sx={{ display: "flex" }}>
+export default function MainEnd(){
+return(<>
+<Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <AppBars />
-      <Drawers />
+<CollapsibleExample/>
       <Box
         component="main"
         sx={{
@@ -32,5 +32,6 @@ export default function Home() {
         </Box>
       </Box>
     </Box>
-  );
+    <Footer/>
+</>)
 }

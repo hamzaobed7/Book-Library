@@ -3,34 +3,30 @@ import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia"; 
+import CardMedia from "@mui/material/CardMedia";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import "../Css/Cards.css";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-export default function OutlinedCard({ book,handleClickOpen }) {
-
+export default function OutlinedCard({ book, handleClickOpen, state }) {
   const imageBaseUrl = "http://127.0.0.1:8000/storage/book_image/";
   const defaultImage = "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?q=80&w=1000&auto=format&fit=crop";
-  
+
   return (
     <Box className="card-wrapper">
-      <Card className="card" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      
-        <CardMedia
-          component="img"
-          height="220" 
-          image={book.cover ? `${imageBaseUrl}${book.cover}` : defaultImage}
-          alt={book.title}
-          sx={{ objectFit: "cover" }} 
-          className="book-cover-media"
-        />
+      <Card className="card" style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+        <CardMedia className="images" component="img" height="320" 
+        image={book.cover ? `${imageBaseUrl}${book.cover}` 
+        : defaultImage} 
+        alt={book.title} 
+        
+        className="book-cover-media" />
 
         <CardContent className="card-content" style={{ flexGrow: 1 }}>
-          <Typography className="book-title" variant="h6" component="div">
+          <Typography className="book-title" variant="h6" sx={{textWrap:'nowrap'}} component="div">
             {book.title}
           </Typography>
 
@@ -50,9 +46,11 @@ export default function OutlinedCard({ book,handleClickOpen }) {
             </Link>
           </Button>
 
-           <IconButton sx={{ color: "red" }} aria-label="delete" onClick={() => handleClickOpen(book.id)}>
-                      <DeleteIcon />
-                    </IconButton>
+          {
+            state&&(<IconButton sx={{ color: "red" }} aria-label="delete" onClick={() => handleClickOpen(book.id)}>
+            <DeleteIcon />
+          </IconButton>)
+          }
         </CardActions>
       </Card>
     </Box>

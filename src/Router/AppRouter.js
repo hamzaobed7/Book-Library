@@ -16,12 +16,19 @@ import AddCategory from "../Pages/AddCategory";
 import GetAllCategory from "../Pages/GetAllCategory";
 import BookDetiles from "../Pages/BookDetiles";
 import Profile from "../Pages/Profile";
-import DeleteMultiElement from "../Pages/DeleteMultiElement"
+import DeleteMultiElement from "../Pages/DeleteMultiElement";
 import StockManagement from "../Pages/EditeIncreamntal";
-import SearchPage from "../Pages/Search"
+import SearchPage from "../Pages/Search";
+import MainEnd from "../Page-forGust/MainEnd";
+
+import MainPage from "../Page-forGust/MainPage";
 export default function AppRoutes() {
   return (
     <Routes>
+      <Route element={<MainEnd />}>
+        <Route element={<MainPage />} path="/HomePage" />
+      </Route>
+
       <Route element={<PublicRoute />}>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />

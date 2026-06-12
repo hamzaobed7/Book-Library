@@ -1,7 +1,8 @@
 .card-wrapper {
   display: flex;
-  justify-content: center;
-  width: 50.33%;
+  flex-direction: column;
+
+  justify-content: space-between;
   padding: 15px;
   box-sizing: border-box;
 }
@@ -10,13 +11,17 @@
   width: 100% !important;
   height: auto;
   padding: 30px;
-  border-radius: 18px !important;
+  border-radius: 3px !important;
   background: rgba(255, 255, 255) !important;
   border: 1px solid rgba(255, 255, 255, 0.12);
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
-  transition: 0.4s;
+  transition: 0.6s ease-in-out;
 }
 
+.images {
+  width: 200 px !important;
+  object-fit: fill !important;
+}
 .card:hover {
   transform: translateY(-10px) scale(1.02);
   box-shadow: 0 20px 60px rgba(99, 102, 241, 0.35);
@@ -186,7 +191,6 @@
   animation-delay: calc(var(--delay) * 0.05s);
 }
 
-
 @media (max-width: 768px) {
   .page-container {
     flex-direction: column;
@@ -211,21 +215,23 @@
   .main-content {
     padding: 20px;
   }
-  .card-wrapper{
-    width: 50% !important;
+  .card-wrapper {
+    width: 100% !important;
     height: 100%;
-   position: relative;
-   right: 20px;
+    position: relative;
+    right: 20px;
   }
-  .card{
+  .card {
     width: 100% !important;
   }
-  .card-content{
+  .card-content {
     width: 100% !important;
   }
-  .book-title,.book-price,.book-date{
+  .book-title,
+  .book-price,
+  .book-date {
     width: 100% !important;
-font-size: 16px !important;
+    font-size: 16px !important;
   }
 }
 
@@ -264,4 +270,30 @@ font-size: 16px !important;
   .Select-form-Category {
     width: 100%;
   }
+}
+
+
+::-webkit-scrollbar {
+  width: 12px;              
+  height: 12px;             
+  background-color: #fafafa; 
+}
+
+
+::-webkit-scrollbar-track {
+  background-color: #fafafa; 
+  border-radius: 8px;        
+}
+
+
+::-webkit-scrollbar-thumb {
+  background-color: #061e3c;
+  border-radius: 8px;       
+  border: 3px solid #fafafa; 
+}
+
+
+::-webkit-scrollbar-button {
+  background-color: #060f1a; 
+  display: none;             
 }
