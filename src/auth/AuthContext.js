@@ -12,9 +12,8 @@ export default function AuthProvider({ children }) {
     }
   });
     const navigate = useNavigate();
-  
+    
     const login = (data) => {
-    console.log(data)
     const accessToken = data.access_token || data.token;
     const userData = data.user || null;
     const expiryTime = Date.now() + 60*60*1000;

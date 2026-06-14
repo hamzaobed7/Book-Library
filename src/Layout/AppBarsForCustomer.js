@@ -7,7 +7,7 @@ import NotificationIconWithBadge from "../Componants/Notifications"
 import { AuthContext } from "../auth/AuthContext";
 import { useEffect } from "react";
 import api from "../api/axios";
-export default function AppBars() {
+export default function AppBarsCustomer() {
   const [activat, SetActivat] = useState(false);
   const { logout, user } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -15,7 +15,7 @@ export default function AppBars() {
     logout();
     navigate("/login");
   };
-   
+   const [info,setInfo]=useState();
     const [loading, setLoading] = useState(false);
     const [userType, setUserType] = useState(""); 
     const [imagePreview, setImagePreview] = useState("");
@@ -26,7 +26,7 @@ useEffect(() => {
         setLoading(true);
         const res = await api.get("/user"); 
         const user = res.data?.data?.user;
-
+        setInfo(res.data?.data?.user);
         if (user) {
           const detectedType = user.type || "admin";
           setUserType(detectedType); 
@@ -84,7 +84,7 @@ useEffect(() => {
                 fontWeight: "bold",
               }}
             >
-              Admin Dashboard
+              {info?.name}
             </Typography>
           </Box>
           <Box

@@ -7,12 +7,14 @@ import "../Css/Navbar.css";
 import { NavLink } from "react-router-dom";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import FollowTheSignsIcon from "@mui/icons-material/FollowTheSigns";
+import SearchIcon from '@mui/icons-material/Search';
 function CollapsibleExample() {
   return (
     <Navbar  collapseOnSelect expand="lg" className="bg-body-tertiary nav">
       <Container>
         <Box sx={{ position: "relative", right: "50px" }}>
-          <Link
+          <Link as={Link}
+          to="/HomePage"
            onClick={() => {
                 const element = document.getElementById("home-section");
                 if (element) {
@@ -75,15 +77,21 @@ function CollapsibleExample() {
           </Nav>
 
           <Nav style={{ position: "relative", left: "200px" }}>
-            <Nav.Link href="#deets" className="Log" style={{ color: "white", textAlign: "center" }}>
+            <Nav.Link as={Link} to="/login" className="Log" style={{ color: "white", textAlign: "center" }}>
               <AccountCircleIcon />
               <br />
               Login
             </Nav.Link>
-            <Nav.Link eventKey={2} href="#memes" className="Log" style={{ color: "white", extAlign: "center" }}>
+            <Nav.Link eventKey={2} as={Link} to="/signup" className="Log" style={{ color: "white", extAlign: "center" }}>
               <FollowTheSignsIcon />
               <br />
               Sign up
+            </Nav.Link>
+
+             <Nav.Link eventKey={2} as={Link} to="/searchG" className="Log" style={{ color: "white", extAlign: "center" }}>
+              <SearchIcon />
+              <br />
+              Search
             </Nav.Link>
           </Nav>
         </Navbar.Collapse>

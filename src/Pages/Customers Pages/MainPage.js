@@ -1,14 +1,15 @@
-import { Outlet } from 'react-router-dom';
-import CollapsibleExample from "../Layout/Navbar";
-import Footer from "../Layout/Footer"
-import { CssBaseline } from '@mui/material';
-import Box from '@mui/material/Box';
 
-export default function MainEnd(){
-return(<>
-<Box sx={{ display: "flex" }}>
+
+import { Box, CssBaseline } from "@mui/material";
+import { Outlet } from "react-router-dom";
+import AppBarsCustomer from "../../Layout/AppBarsForCustomer";
+import Drawers from "../../Layout/DrawerCustomer";
+export default function MainPageCustomers(){
+    return(<>
+     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-       <CollapsibleExample/>
+      <AppBarsCustomer />
+      <Drawers/>
       <Box
         component="main"
         sx={{
@@ -32,6 +33,6 @@ return(<>
         </Box>
       </Box>
     </Box>
-    <Footer/>
-</>)
+    
+    </>)
 }

@@ -3,11 +3,6 @@ import {
   ListItemIcon, ListItemText,  Toolbar
 } from "@mui/material";
 import MenuBookIcon from '@mui/icons-material/MenuBook';
-import PersonIcon from '@mui/icons-material/Person';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
-import EditIcon from '@mui/icons-material/Edit';
-import InventoryIcon from '@mui/icons-material/Inventory';
-import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import {Link, useLocation } from "react-router-dom";
@@ -15,18 +10,9 @@ const drawerWidth = 260;
 export default function Drawers(){
     const location = useLocation();
  const menuItems = [
-  { text: "Admin DashBoard", icon: <AdminPanelSettingsIcon />, path: "/dashboard" },
-    { text: "All Books", icon: <MenuBookIcon />, path: "/GetBooks" },
-    { text: "Add New Book", icon: <AddCircleIcon />, path: "/AddBook" },
-    { text: "Update Book", icon: <EditIcon />, path: "/updateBook" },
-    { text: "All Authors", icon: <PersonIcon />, path: "/GetAuthor" },
-    { text: "Add New Author", icon: <AddCircleIcon />, path: "/AddAuthor" },
-    { text: "Update Author", icon: <EditIcon />, path: "/UpdateAuthor" },
-    { text: "Add New Category", icon: <AddCircleIcon />, path: "/AddCategory" },
-    { text: "All Category", icon: <MenuBookIcon />, path: "/GetAllCategory" },
-    { text: "Update the Stock", icon: <InventoryIcon />, path: "/Stock" },
-    { text: "Delete Multi", icon: <DeleteIcon />, path: "/DeleteMulti" },
-    { text: "Search", icon: <SearchIcon/>, path: "/search" },
+  { text: "Main Page", icon: <AdminPanelSettingsIcon />, path: "/Main" },
+    { text: "All Books", icon: <MenuBookIcon />, path: "/GetBooksGust" },
+    { text: "Search", icon: <SearchIcon/>, path: "/searchCu" },
   ];
 return(<>
 <Drawer

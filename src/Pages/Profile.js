@@ -1,29 +1,11 @@
 import React, { useState, useEffect } from "react";
 import {
-  Box,
-  Container,
-  Paper,
-  Typography,
-  Avatar,
-  TextField,
-  Button,
-  Grid,
-  Tabs,
-  Tab,
-  IconButton,
-  InputAdornment,
-  Divider,
-  CircularProgress,
-  Fade,
+  Box, Container, Paper, Typography, Avatar, TextField, Button, Grid,
+  Tabs, Tab, IconButton, InputAdornment, Divider, CircularProgress, Fade, MenuItem
 } from "@mui/material";
 import {
-  Person as PersonIcon,
-  Lock as LockIcon,
-  Visibility,
-  VisibilityOff,
-  PhotoCamera,
-  Save as SaveIcon,
-  VpnKey as KeyIcon,
+  Person as PersonIcon, Lock as LockIcon, Visibility, VisibilityOff,
+  PhotoCamera, Save as SaveIcon, VpnKey as KeyIcon
 } from "@mui/icons-material";
 import api from "../api/axios"; 
 import SimpleSnackbar from "../Componants/Snakbar"; 
@@ -43,12 +25,22 @@ function CustomTabPanel({ children, value, index, ...other }) {
 export default function Profile() {
   const [activeTab, setActiveTab] = useState(0);
   const [loading, setLoading] = useState(false);
-  
   const [opens, setOpens] = useState(false);
   const [mess, SetMes] = useState("");
   const [color, setColor] = useState("success");
 
-  const [profileData, setProfileData] = useState({ name: "", email: "" });
+  const [userType, setUserType] = useState(""); 
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState("");
+
+  const [profileData, setProfileData] = useState({ 
+    name: "", 
+    email: "",
+    phone: "",
+    gender: "",
+    DOB: ""
+  });
+  
   const [passwordData, setPasswordData] = useState({
     current_password: "",
     new_password: "",
@@ -78,11 +70,32 @@ export default function Profile() {
       try {
         setLoading(true);
         const res = await api.get("/user"); 
-        if (res.data?.data?.user) {
+        const user = res.data?.data?.user;
+
+        if (user) {
+          const detectedType = user.type || "admin";
+          setUserType(detectedType); 
+
+          let customerDetails = {};
+          if (detectedType === "customer") {
+            const information = await api.get(`/customerProfile/${user.id}`);
+            customerDetails = information.data?.data || {};
+          }
+
           setProfileData({
-            name: res.data.data.user.name,
-            email: res.data.data.user.email,
+            name: user.name || "",
+            email: user.email || "",
+            phone: customerDetails.phone || "",
+            gender: customerDetails.gender || "",
+            DOB: customerDetails.DOB || "", 
           });
+          
+          if (user.cover) {
+            setImagePreview(user.cover); 
+          } else if (customerDetails.cover) {
+            
+            setImagePreview(customerDetails.cover);
+          }
         }
       } catch (err) {
         showToast("Failed to load user data", "error");
@@ -111,11 +124,38 @@ export default function Profile() {
     setPasswordData({ ...passwordData, [e.target.name]: e.target.value });
   };
 
+  const handleFileChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setSelectedFile(file);
+      setImagePreview(URL.createObjectURL(file)); 
+    }
+  };
+
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
     try {
       setLoading(true);
-      const res = await api.put("/profile/update", profileData); 
+      const formData = new FormData();
+      formData.append("name", profileData.name);
+      formData.append("email", profileData.email);
+      
+      if (userType === "customer") {
+        formData.append("phone", profileData.phone);
+        formData.append("gender", profileData.gender);
+        formData.append("DOB", profileData.DOB);
+      }
+      
+      if (selectedFile) {
+        formData.append("cover", selectedFile);
+      }
+      
+      formData.append("_method", "PUT");
+
+      const res = await api.post("/profile/update", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      }); 
+
       showToast(res.data?.message || "Profile updated successfully", "success");
     } catch (err) {
       showToast(err.response?.data?.message || "Error updating profile", "error");
@@ -150,8 +190,10 @@ export default function Profile() {
     );
   }
 
+  const isCustomer = userType === "customer";
+
   return (
-    <Container maxWidth="lg" sx={{ mt: 6, mb: 6 }}>
+    <Container maxWidth="md" sx={{ mt: 6, mb: 6 }}> 
       <Paper
         elevation={0}
         sx={{
@@ -173,6 +215,7 @@ export default function Profile() {
         >
           <Box sx={{ position: "relative" }}>
             <Avatar
+              src={`http://127.0.0.1:8000/storage/customer_images/${imagePreview}`} 
               sx={{
                 width: 100,
                 height: 100,
@@ -184,27 +227,35 @@ export default function Profile() {
                 border: "3px solid rgba(255,255,255,0.8)"
               }}
             >
-              {profileData.name ? profileData.name.charAt(0).toUpperCase() : "U"}
+              {!imagePreview && (profileData.name ? profileData.name.charAt(0).toUpperCase() : "U")}
             </Avatar>
-            <IconButton
-              sx={{
-                position: "absolute",
-                bottom: -2,
-                right: -2,
-                backgroundColor: "white",
-                color: "#1e293b",
-                "&:hover": { backgroundColor: "#f1f5f9" },
-                boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-                padding: "7px",
-              }}
-              size="small"
-            >
-              <PhotoCamera sx={{ fontSize: 18 }} />
-            </IconButton>
+            
+            {isCustomer && (
+              <IconButton
+                component="label" 
+                sx={{
+                  position: "absolute",
+                  bottom: -2,
+                  right: -2,
+                  backgroundColor: "white",
+                  color: "#1e293b",
+                  "&:hover": { backgroundColor: "#f1f5f9" },
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+                  padding: "7px",
+                }}
+                size="small"
+              >
+                <input type="file" hidden accept="image/*" onChange={handleFileChange} />
+                <PhotoCamera sx={{ fontSize: 18 }} />
+              </IconButton>
+            )}
           </Box>
 
           <Typography variant="h5" sx={{ mt: 2.5, fontWeight: "700", letterSpacing: "-0.5px" }}>
-            {profileData.name || "User Profile"}
+            {profileData.name || "User Profile"} 
+            <Typography component="span" variant="caption" sx={{ ml: 1, verticalAlign: 'middle', backgroundColor: 'rgba(255,255,255,0.2)', px: 1, py: 0.5, borderRadius: '6px' }}>
+              {userType.toUpperCase()}
+            </Typography>
           </Typography>
           <Typography variant="body2" sx={{ opacity: 0.75, mt: 0.5, fontWeight: "400" }}>
             {profileData.email || "Loading email..."}
@@ -230,8 +281,9 @@ export default function Profile() {
             <Typography variant="subtitle1" sx={{ mb: 3, fontWeight: "700", color: "#0f172a", display: 'flex', alignItems: 'center', gap: 1 }}>
               <PersonIcon sx={{ color: '#4a90e2' }} /> Personal Details
             </Typography>
+            
             <Grid container direction="column" spacing={2.5}>
-              <Grid item>
+              <Grid item xs={12}>
                 <TextField
                   fullWidth
                   label="Full Name"
@@ -239,10 +291,12 @@ export default function Profile() {
                   value={profileData.name}
                   onChange={handleProfileChange}
                   required
+                  disabled={!isCustomer}
                   sx={{ '& .MuiOutlinedInput-root': { borderRadius: '12px' } }}
                 />
               </Grid>
-              <Grid item>
+
+              <Grid item xs={12}>
                 <TextField
                   fullWidth
                   label="Email Address"
@@ -251,31 +305,77 @@ export default function Profile() {
                   value={profileData.email}
                   onChange={handleProfileChange}
                   required
+                  disabled={!isCustomer}
                   sx={{ '& .MuiOutlinedInput-root': { borderRadius: '12px' } }}
                 />
               </Grid>
-              <Grid item sx={{ mt: 1 }}>
-                <Divider sx={{ mb: 2.5 }} />
-                <Button
-                  type="submit"
-                  variant="contained"
-                  disabled={loading}
-                  startIcon={<SaveIcon />}
-                  sx={{
-                    background: "linear-gradient(135deg, #4a90e2 0%, #357abd 100%)",
-                    padding: "10px 24px",
-                    borderRadius: "12px",
-                    fontWeight: "600",
-                    textTransform: "none",
-                    boxShadow: "0 8px 20px -6px rgba(74, 144, 226, 0.4)",
-                    width: { xs: "100%", sm: "auto" },
-                    float: { sm: "right" },
-                    "&:hover": { background: "#357abd" },
-                  }}
-                >
-                  {loading ? "Saving..." : "Save Changes"}
-                </Button>
-              </Grid>
+
+              {isCustomer && (
+                <>
+                  <Grid item xs={12}>
+                    <TextField
+                      fullWidth
+                      label="Phone Number"
+                      name="phone"
+                      value={profileData.phone}
+                      onChange={handleProfileChange}
+                      sx={{ '& .MuiOutlinedInput-root': { borderRadius: '12px' } }}
+                    />
+                  </Grid>
+
+                  <Grid item xs={12}>
+                    <TextField
+                      select
+                      fullWidth
+                      label="Gender"
+                      name="gender"
+                      value={profileData.gender}
+                      onChange={handleProfileChange}
+                      sx={{ '& .MuiOutlinedInput-root': { borderRadius: '12px' } }}
+                    >
+                      <MenuItem value="male">Male</MenuItem>
+                      <MenuItem value="female">Female</MenuItem>
+                      <MenuItem value="other">Other</MenuItem>
+                    </TextField>
+                  </Grid>
+
+                  <Grid item xs={12}>
+                    <TextField
+                      fullWidth
+                      label="Date of Birth"
+                      name="DOB"
+                      type="date"
+                      value={profileData.DOB}
+                      onChange={handleProfileChange}
+                      InputLabelProps={{ shrink: true }}
+                      sx={{ '& .MuiOutlinedInput-root': { borderRadius: '12px' } }}
+                    />
+                  </Grid>
+                  
+                  <Grid item xs={12} sx={{ mt: 1 }}>
+                    <Divider sx={{ mb: 2.5 }} />
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      disabled={loading}
+                      startIcon={<SaveIcon />}
+                      sx={{
+                        background: "linear-gradient(135deg, #4a90e2 0%, #357abd 100%)",
+                        padding: "10px 24px",
+                        borderRadius: "12px",
+                        fontWeight: "600",
+                        textTransform: "none",
+                        boxShadow: "0 8px 20px -6px rgba(74, 144, 226, 0.4)",
+                        width: { xs: "100%", sm: "auto" },
+                        float: { sm: "right" },
+                        "&:hover": { background: "#357abd" },
+                      }}
+                    >
+                      {loading ? "Saving..." : "Save Changes"}
+                    </Button>
+                  </Grid>
+                </>
+              )}
             </Grid>
           </Box>
         </CustomTabPanel>

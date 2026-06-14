@@ -12,10 +12,13 @@ import { fi } from "zod/v4/locales";
 export default function GetAllBooks() {
   const { books, loading,bookCount,fetchBooks } = useContext(DataContext);
   const [Snak,setSnak]=useState(false);
+  const [type,setType]=useState("")
   const [category, SetCategory] = useState("All");
 const handleClickOpen=async(id)=>{
 try{
 const responce=await api.delete(`/books/${id}`);
+const user=localStorage.getItem('user')
+setType(user)
 fetchBooks()
 setSnak(true)
 }catch(error){
@@ -57,7 +60,7 @@ setSnak(true)
             : filterBook?.map((book, index) => {
                 return (
                   <div className="book-animated-card" key={book.id || index} style={{ "--delay": index }}>
-                    <OutlinedCard state={true} handleClickOpen={handleClickOpen} book={book} />
+                    {(type==='admin'?<OutlinedCard delet={true} rent={false} handleClickOpen={handleClickOpen} book={book} />:<OutlinedCard delet={false} rent={true} handleClickOpen={handleClickOpen} book={book} />)}
                   </div>
                 );
               })}

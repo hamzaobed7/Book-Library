@@ -20,41 +20,60 @@ import DeleteMultiElement from "../Pages/DeleteMultiElement";
 import StockManagement from "../Pages/EditeIncreamntal";
 import SearchPage from "../Pages/Search";
 import MainEnd from "../Page-forGust/MainEnd";
+import MainPageCustomers from "../Pages/Customers Pages/MainPage";
+import MainPage from "./../Page-forGust/MainPage";
 
-import MainPage from "../Page-forGust/MainPage";
+import GuestSearchPage from "../Page-forGust/SearchForUesrs.js";
+import MainPageCustomer from "../Pages/Customers Pages/MainPageCustomer.js";
+
 export default function AppRoutes() {
   return (
     <Routes>
-      <Route element={<MainEnd />}>
-        <Route element={<MainPage />} path="/HomePage" />
-      </Route>
-
       <Route element={<PublicRoute />}>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/verify-otp" element={<VerifyOtp />} />
       </Route>
-      <Route element={<ProtectedRoute />}>
-        <Route element={<Home />}>
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/GetBooks" element={<GetAllBooks />} />
-          <Route path="/UpdateBook" element={<UpdateBook />} />
-          <Route path="/AddBook" element={<AddBook />} />
-          <Route path="/AddCategory" element={<AddCategory />} />
-          <Route path="/GetAuthor" element={<GetAllAuthors />} />
-          <Route path="/AddAuthor" element={<AddAuthor />} />
-          <Route path="/UpdateAuthor" element={<UpdateAuthor />} />
-          <Route path="/GetAllCategory" element={<GetAllCategory />} />
-          <Route path="/DeleteMulti" element={<DeleteMultiElement />} />
+
+      <Route path="/BookDetiles/:id" element={<BookDetiles />} />
+
+      <Route element={<ProtectedRoute allowedRoles={["customer"]} />}>
+        <Route element={<MainPageCustomers />}>
+          <Route path="/Main" element={<MainPageCustomer />} />
+          <Route path="GetBooksGust" element={<GetAllBooks />} />
+          <Route path="/searchCu" element={<GuestSearchPage />} />
           <Route path="/MyProfile" element={<Profile />} />
-          <Route path="/Stock" element={<StockManagement />} />
-          <Route path="/search" element={<SearchPage />} />
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
         </Route>
-        <Route path="/BookDetiles/:id" element={<BookDetiles />} />
       </Route>
 
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route element={<MainEnd />}>
+        <Route path="/HomePage" element={<MainPage />} />
+        <Route path="/GetBooks" element={<GetAllBooks />} />
+        <Route path="/searchG" element={<GuestSearchPage />} />
+      </Route>
+
+      <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
+        <Route element={<Home />}>
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="UpdateBook" element={<UpdateBook />} />
+          <Route path="GetBooks" element={<GetAllBooks />} />
+          <Route path="AddBook" element={<AddBook />} />
+          <Route path="AddCategory" element={<AddCategory />} />
+          <Route path="GetAuthor" element={<GetAllAuthors />} />
+          <Route path="AddAuthor" element={<AddAuthor />} />
+          <Route path="UpdateAuthor" element={<UpdateAuthor />} />
+          <Route path="GetAllCategory" element={<GetAllCategory />} />
+          <Route path="DeleteMulti" element={<DeleteMultiElement />} />
+          <Route path="MyProfile" element={<Profile />} />
+          <Route path="Stock" element={<StockManagement />} />
+          <Route path="/MyProfile" element={<Profile />} />
+          <Route path="search" element={<SearchPage />} />
+          <Route index element={<Navigate to="dashboard" replace />} />
+        </Route>
+      </Route>
+
+      <Route path="/" element={<Navigate to="/HomePage" replace />} />
+      <Route path="*" element={<Navigate to="/HomePage" replace />} />
     </Routes>
   );
 }

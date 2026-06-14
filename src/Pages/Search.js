@@ -66,14 +66,12 @@ export default function SearchPage() {
   return (
     <Box sx={{ maxWidth: "1200px", margin: "0 auto", p: { xs: 2, md: 4 } }}>
       
-      {/* لوحة الفلاتر */}
       <Paper elevation={3} sx={{ p: 4, borderRadius: "12px", mb: 4, backgroundColor: "#fafafa" }}>
         <Typography variant="h5" sx={{ fontWeight: "700", color: "#2d3748", mb: 3, display: "flex", alignItems: "center", gap: 1 }}>
           <SearchIcon color="primary" /> Advanced Book Search
         </Typography>
-
         <Grid container spacing={3}>
-          <Grid item xs={12} md={4}>
+          <Grid  xs={12} md={4}>
             <TextField
               fullWidth
               size="small"
@@ -84,7 +82,7 @@ export default function SearchPage() {
             />
           </Grid>
 
-          <Grid item xs={12} md={4}>
+          <Grid  xs={12} md={4}>
             <TextField
               fullWidth
               size="small"
@@ -95,7 +93,7 @@ export default function SearchPage() {
             />
           </Grid>
 
-          <Grid item xs={12} md={4}>
+          <Grid  xs={12} md={4}>
             <TextField
               fullWidth
               size="small"
@@ -106,7 +104,7 @@ export default function SearchPage() {
             />
           </Grid>
 
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid  xs={12} sm={6} md={3}>
             <TextField
               fullWidth
               size="small"
@@ -114,12 +112,11 @@ export default function SearchPage() {
               name="from_date"
               value={filters.from_date}
               onChange={handleChange}
-              InputLabelProps={{ shrink: true }}
               label="Published From"
             />
           </Grid>
 
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid  xs={12} sm={6} md={3}>
             <TextField
               fullWidth
               size="small"
@@ -127,7 +124,6 @@ export default function SearchPage() {
               name="to_date"
               value={filters.to_date}
               onChange={handleChange}
-              InputLabelProps={{ shrink: true }}
               label="Published To"
             />
           </Grid>
@@ -202,12 +198,12 @@ export default function SearchPage() {
               </TableHead>
               <TableBody>
                 {results.map((book) => {
-                  
+                  console.log(results)
                   let authorName = "Unknown";
-                  if (Array.isArray(book.author)) {
-                    authorName = book.author.map((e) => e.first_name).join(", ");
-                  } else if (book.author?.first_name) {
-                    authorName = `${book.author.first_name} ${book.author.last_name || ""}`;
+                  if (Array.isArray(book.authors)) {
+                    authorName = book.authors.map((e) => e.first_name).join(", ");
+                  } else if (book.authors?.first_name) {
+                    authorName = `${book.authors.first_name} ${book.authors.last_name || ""}`;
                   }
 
                   return (
@@ -238,7 +234,7 @@ export default function SearchPage() {
                         )}
                       </TableCell>
                       <TableCell sx={{ color: "#64748b" }}>
-                        {book.created_at ? new Date(book.created_at).toLocaleDateString() : "-"}
+                        {book.published_at}
                       </TableCell>
                     </TableRow>
                   );
