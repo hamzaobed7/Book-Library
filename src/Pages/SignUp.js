@@ -1,289 +1,257 @@
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
-import { useNavigate, Link as RouterLink } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import * as z from "zod";
+import { useState } from "react";
 import api from "../api/axios";
 import SimpleSnackbar from "../Componants/Snakbar";
 
-// استيراد مكونات Material-UI
-import {
-  Container,
-  Box,
-  Typography,
-  TextField,
-  Button,
-  Grid,
-  MenuItem,
-  InputLabel,
-  FormControl,
-  Select,
+import { 
+  TextField, 
+  Button, 
+  MenuItem, 
+  Box, 
+  Typography, 
+  Avatar, 
   FormHelperText,
-  Paper,
-  Link
+  CircularProgress,
+  Container,
+  Paper
 } from "@mui/material";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+
+const MAX_FILE_SIZE = 2 * 1024 * 1024; 
 
 const signupSchema = z
   .object({
     name: z.string().min(3, "Name must be at least 3 characters"),
-    email: z.string().email("Invalid email"),
-    password: z.string().min(6, "Password must be at least 6 characters"),
-    confirmPassword: z.string(),
-    phone: z.string().min(1, "Phone is required"),
+    email: z.string().email("Invalid email address"),
+    phone: z.string().regex(/^[0-9]{10}$/, "Phone must be exactly 10 digits"),
     gender: z.enum(["Male", "Female"], { errorMap: () => ({ message: "Gender is required" }) }),
     DOB: z.string().min(1, "Date of birth is required"),
     lang: z.string().min(1, "Language is required"),
-    cover: z.any().refine((files) => files?.length === 1, "Cover image is required"),
+    password: z.string().min(6, "Password must be at least 6 characters"),
+    confirmPassword: z.string(),
+    cover: z
+      .any()
+      .refine((files) => files && files.length === 1, "Profile image is required")
+      .refine((files) => files?.[0]?.size <= MAX_FILE_SIZE, "Max image size is 2MB"),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords do not match",
     path: ["confirmPassword"],
+    message: "Passwords do not match",
   });
 
 export default function Signup() {
-  const [open, setOpen] = useState(false);
-  const [color, setColor] = useState("");
-  const [mess, SetMes] = useState("");
-  const [fileName, setFileName] = useState(""); // لعرض اسم الملف المرفوع في زر الـ MUI
   const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+  const [mess, setMess] = useState("");
+  const [color, setColor] = useState("success");
+  const [preview, setPreview] = useState(null);
 
   const {
     register,
     handleSubmit,
-    control,
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(signupSchema),
-    defaultValues: {
-      name: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-      phone: "",
-      gender: "Male",
-      DOB: "",
-      lang: "ar",
-    }
   });
 
-  const handleFileChange = (e) => {
-    if (e.target.files && e.target.files.length > 0) {
-      setFileName(e.target.files[0].name);
-    }
-  };
+  const { onChange, ...coverRegister } = register("cover");
 
-  const handleClose = (event, reason) => {
-    if (reason === "clickaway") return;
-    setOpen(false);
+  const handleImageChange = (e) => {
+    onChange(e); 
+    const file = e.target.files[0];
+    if (file) {
+      setPreview(URL.createObjectURL(file));
+    }
   };
 
   async function onSubmit(data) {
     try {
-      await api.post("/signup", { email: data.email });
-      navigate("/verify-otp", {
-        state: { signupData: data },
+      const formData = new FormData();
+      formData.append("name", data.name);
+      formData.append("email", data.email);
+      formData.append("phone", data.phone);
+      formData.append("gender", data.gender);
+      formData.append("DOB", data.DOB);
+      formData.append("lang", data.lang);
+      formData.append("password", data.password);
+      formData.append("cover", data.cover[0]);
+
+      const res = await api.post("/signup", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
+
+      setMess("Registration successful!");
+      setColor("success");
+      setOpen(true);
+
+      setTimeout(() => {
+        navigate("/verify-otp", {
+          state: { user_id: res.data.data.user_id },
+        });
+      }, 1500);
+
     } catch (err) {
-      console.error(err.response?.data);
-      SetMes(err.response?.data?.message || "Signup failed");
+      console.error(err);
+      setMess(err.response?.data?.message || "Something went wrong. Please try again.");
       setColor("error");
       setOpen(true);
     }
   }
 
   return (
-    <Container component="main" maxWidth="md" sx={{ mt: 35, mb: 4 }}>
-      <Paper elevation={4} sx={{ p: 4, borderRadius: 3, backgroundColor: '#ffffff' }}>
+    <Box sx={{ backgroundColor: "#f4f6f8", minHeight: "100vh", py: 6 }}>
+     
+      <Container maxWidth="md">
+        
        
-        <Box sx={{ mb: 4, textAlign: 'center' }}>
-          <Typography component="h1" variant="h4" fontWeight="700" color="primary" gutterBottom>
-            Create Account
+        <Box 
+          sx={{ 
+            textTransform: "none", 
+            background: "linear-gradient(135deg, #1565c0 0%, #1e88e5 100%)",
+            color: "#fff",
+            p: 5, 
+            borderRadius: "16px 16px 0 0", 
+            textAlign: "center",
+            boxShadow: "0px 4px 20px rgba(21, 101, 192, 0.15)"
+          }}
+        >
+          <Typography variant="h3" fontWeight="800" mb={1}>
+            Welcome to Our Platform!
           </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Please fill in the data to secure your registration
+          <Typography variant="h6" sx={{ opacity: 0.9, fontWeight: "400" }}>
+            Create your account now by filling out the form below
           </Typography>
         </Box>
 
-        <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
-          <Grid container spacing={3} sx={{width:"100%"}} >
+     
+        <Paper 
+          elevation={0} 
+          sx={{ 
+            p: { xs: 3, sm: 6 }, 
+            borderRadius: "0 0 16px 16px", 
+            border: "1px solid #e0e0e0",
+            borderTop: "none"
+          }}
+        >
+          <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
             
-           
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label="Full Name"
-                placeholder="John Doe"
-                {...register("name")}
-                error={!!errors.name}
-                helperText={errors.name?.message}
-              />
-            </Grid>
-
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                type="email"
-                label="Email Address"
-                placeholder="example@gmail.com"
-                {...register("email")}
-                error={!!errors.email}
-                helperText={errors.email?.message}
-              />
-            </Grid>
-
-       
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label="Phone Number"
-                placeholder="09xxxxxxxx"
-                {...register("phone")}
-                error={!!errors.phone}
-                helperText={errors.phone?.message}
-              />
-            </Grid>
-
           
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                type="date"
-                label="Date of Birth"
-                InputLabelProps={{ shrink: true }}
-                {...register("DOB")}
-                error={!!errors.DOB}
-                helperText={errors.DOB?.message}
-              />
-            </Grid>
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+              
+              <TextField fullWidth label="Full Name" {...register("name")} error={!!errors.name} helperText={errors.name?.message} />
 
-        
-            <Grid item xs={12} sm={6}>
-              <FormControl fullWidth error={!!errors.gender}>
-                <InputLabel id="gender-label">Gender</InputLabel>
-                <Controller
-                  name="gender"
-                  control={control}
-                  render={({ field }) => (
-                    <Select labelId="gender-label" label="Gender" {...field}>
-                      <MenuItem value="Male">Male</MenuItem>
-                      <MenuItem value="Female">Female</MenuItem>
-                    </Select>
-                  )}
-                />
-                {errors.gender && <FormHelperText>{errors.gender.message}</FormHelperText>}
-              </FormControl>
-            </Grid>
+              <TextField fullWidth label="Email Address" type="email" {...register("email")} error={!!errors.email} helperText={errors.email?.message} />
 
-            
-            <Grid item xs={12} sm={6}>
-              <FormControl fullWidth error={!!errors.lang}>
-                <InputLabel id="lang-label">System Language</InputLabel>
-                <Controller
-                  name="lang"
-                  control={control}
-                  render={({ field }) => (
-                    <Select labelId="lang-label" label="System Language" {...field}>
-                      <MenuItem value="ar">Arabic</MenuItem>
-                      <MenuItem value="en">English</MenuItem>
-                    </Select>
-                  )}
-                />
-                {errors.lang && <FormHelperText>{errors.lang.message}</FormHelperText>}
-              </FormControl>
-            </Grid>
+              <TextField fullWidth label="Phone Number" {...register("phone")} error={!!errors.phone} helperText={errors.phone?.message} />
 
-           
-            <Grid item xs={12}>
-              <FormControl fullWidth error={!!errors.cover}>
-                <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 600, color: errors.cover ? 'error.main' : 'text.primary' }}>
-                  Profile Cover Image
-                </Typography>
-                
-                <Button
-                  component="label"
-                  variant="outlined"
-                  color={fileName ? "success" : errors.cover ? "error" : "primary"}
-                  startIcon={fileName ? <CheckCircleIcon /> : <CloudUploadIcon />}
-                  sx={{
-                    p: 2,
-                    borderStyle: 'dashed',
-                    borderWidth: 2,
-                    '&:hover': { borderWidth: 2, borderStyle: 'dashed' },
-                    backgroundColor: fileName ? '#f4fbf5' : '#fcfcfc',
-                    textTransform: 'none'
+              <TextField select fullWidth label="Gender" defaultValue="" {...register("gender")} error={!!errors.gender} helperText={errors.gender?.message}>
+                <MenuItem value="Male">Male</MenuItem>
+                <MenuItem value="Female">Female</MenuItem>
+              </TextField>
+
+              <TextField fullWidth type="date" label="Date of Birth" {...register("DOB")} error={!!errors.DOB} helperText={errors.DOB?.message} InputLabelProps={{ shrink: true }} />
+
+              <TextField fullWidth label="Preferred Language" {...register("lang")} error={!!errors.lang} helperText={errors.lang?.message} />
+
+              <TextField fullWidth type="password" label="Password" {...register("password")} error={!!errors.password} helperText={errors.password?.message} />
+
+              <TextField fullWidth type="password" label="Confirm Password" {...register("confirmPassword")} error={!!errors.confirmPassword} helperText={errors.confirmPassword?.message} />
+
+             
+              <Box>
+                <Box 
+                  sx={{ 
+                    border: "2px dashed #b0bec5", 
+                    borderRadius: 3, 
+                    p: 4, 
+                    textAlign: "center",
+                    backgroundColor: "#fafafa",
+                    cursor: "pointer",
+                    transition: "0.3s",
+                    "&:hover": { borderColor: "primary.main", backgroundColor: "#f0f7ff" },
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 1
                   }}
+                  component="label"
                 >
-                  {fileName ? `Selected: ${fileName}` : "Click to upload cover image"}
+                  <CloudUploadIcon color="primary" sx={{ fontSize: 48 }} />
+                  <Typography variant="h6" fontWeight="600" color="text.primary">
+                    Upload Profile Image
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Click to browse your files (Max size: 2MB)
+                  </Typography>
+                  
                   <input
                     type="file"
                     hidden
                     accept="image/*"
-                    {...register("cover")}
-                    onChange={(e) => {
-                      register("cover").onChange(e); 
-                      handleFileChange(e); 
-                    }}
+                    onChange={handleImageChange}
+                    ref={coverRegister.ref}
+                    name={coverRegister.name}
                   />
-                </Button>
-                {errors.cover && <FormHelperText>{errors.cover.message}</FormHelperText>}
-              </FormControl>
-            </Grid>
+                </Box>
+                
+                {errors.cover && (
+                  <FormHelperText error sx={{ mt: 1, textAlign: "center", fontSize: "0.9rem" }}>
+                    {errors.cover.message}
+                  </FormHelperText>
+                )}
 
-           
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                type="password"
-                label="Password"
-                placeholder="••••••••"
-                {...register("password")}
-                error={!!errors.password}
-                helperText={errors.password?.message}
-              />
-            </Grid>
+                {preview && (
+                  <Box display="flex" justifyContent="center" mt={3}>
+                    <Avatar
+                      src={preview}
+                      alt="preview"
+                      sx={{ width: 120, height: 120, boxShadow: 3, border: "4px solid #fff" }}
+                    />
+                  </Box>
+                )}
+              </Box>
 
-           
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                type="password"
-                label="Confirm Password"
-                placeholder="••••••••"
-                {...register("confirmPassword")}
-                error={!!errors.confirmPassword}
-                helperText={errors.confirmPassword?.message}
-              />
-            </Grid>
+             
+              <Button 
+                fullWidth 
+                variant="contained" 
+                type="submit" 
+                size="large"
+                sx={{ 
+                  py: 2, 
+                  mt: 2,
+                  borderRadius: 2, 
+                  fontWeight: 'bold', 
+                  fontSize: '1.1rem',
+                  textTransform: 'none', 
+                  boxShadow: "0px 4px 12px rgba(25, 118, 210, 0.3)" 
+                }} 
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? <CircularProgress size={26} color="inherit" /> : "Create Account"}
+              </Button>
 
-          </Grid>
-
-       
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            size="large"
-            disabled={isSubmitting}
-            sx={{ mt: 4, mb: 2, p: 1.5, fontWeight: '700', fontSize: '16px', borderRadius: 2 }}
-          >
-            {isSubmitting ? "Sending OTP..." : "Sign Up & Verify"}
-          </Button>
-
-         
-          <Box sx={{ mt: 2, textAlign: 'center' }}>
-            <Typography variant="body2" color="text.secondary">
-              Already have an account?{" "}
-              <Link component={RouterLink} to="/login" variant="body2" fontWeight="600" underline="hover">
-                Login here
-              </Link>
-            </Typography>
+            </Box>
           </Box>
 
-        </Box>
-      </Paper>
-      <SimpleSnackbar message={mess} color={color} open={open} handleClose={handleClose} />
-    </Container>
+        
+          <Typography mt={4} textAlign="center" variant="body1" color="text.secondary">
+            Already have an account?{" "}
+            <Link to="/login" style={{ color: "#1976d2", textDecoration: "none", fontWeight: "600" }}>
+              Login
+            </Link>
+          </Typography>
+
+        </Paper>
+      </Container>
+
+      <SimpleSnackbar message={mess} color={color} open={open} handleClose={() => setOpen(false)} />
+    </Box>
   );
 }

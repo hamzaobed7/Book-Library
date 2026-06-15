@@ -16,7 +16,7 @@ export default function Drawers(){
     const location = useLocation();
  const menuItems = [
   { text: "Admin DashBoard", icon: <AdminPanelSettingsIcon />, path: "/dashboard" },
-    { text: "All Books", icon: <MenuBookIcon />, path: "/GetBooks" },
+    { text: "All Books", icon: <MenuBookIcon />, path: "/GetBooksS" },
     { text: "Add New Book", icon: <AddCircleIcon />, path: "/AddBook" },
     { text: "Update Book", icon: <EditIcon />, path: "/updateBook" },
     { text: "All Authors", icon: <PersonIcon />, path: "/GetAuthor" },

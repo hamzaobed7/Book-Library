@@ -7,9 +7,9 @@ import { Skeleton } from "@mui/material";
 import Stack from '@mui/material/Stack';
 import api from "../api/axios";
 import SimpleSnackbar from './../Componants/Snakbar';
-import { fi } from "zod/v4/locales";
 
-export default function GetAllBooks() {
+
+export default function GetAllBooks({delet,rent}) {
   const { books, loading,bookCount,fetchBooks } = useContext(DataContext);
   const [Snak,setSnak]=useState(false);
   const [type,setType]=useState("")
@@ -60,7 +60,7 @@ setSnak(true)
             : filterBook?.map((book, index) => {
                 return (
                   <div className="book-animated-card" key={book.id || index} style={{ "--delay": index }}>
-                    {(type==='admin'?<OutlinedCard delet={true} rent={false} handleClickOpen={handleClickOpen} book={book} />:<OutlinedCard delet={false} rent={true} handleClickOpen={handleClickOpen} book={book} />)}
+                    {(type==='admin'?<OutlinedCard delet={delet} rent={rent} handleClickOpen={handleClickOpen} book={book} />:<OutlinedCard delet={delet} rent={rent} handleClickOpen={handleClickOpen} book={book} />)}
                   </div>
                 );
               })}

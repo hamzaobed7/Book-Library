@@ -42,12 +42,7 @@ export default function Login() {
       const response = await api.post("/login", data);
       console.log(response)
       login(response.data.data);
-     if(response.data.data.user.type==='customer'){
-       navigate("/Main", { replace: true });
-     }
-     else{
-       navigate("/", { replace: true });
-     }
+      navigate("/", { replace: true });
     } catch (error) {
       console.error("Login failed:", error);
       SetMes("Login failed. your email or password incorrect .");

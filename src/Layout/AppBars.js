@@ -7,9 +7,12 @@ import NotificationIconWithBadge from "../Componants/Notifications"
 import { AuthContext } from "../auth/AuthContext";
 import { useEffect } from "react";
 import api from "../api/axios";
+import { DataContext } from "../Context/ApiContext";
 export default function AppBars() {
   const [activat, SetActivat] = useState(false);
   const { logout, user } = useContext(AuthContext);
+  const {currntUser}=useContext(DataContext);
+
   const navigate = useNavigate();
   const handleLogout = () => {
     logout();
@@ -110,7 +113,7 @@ useEffect(() => {
                 },
               }}
             >
-              {user?.name?.charAt(0)?.toUpperCase()}
+              {currntUser?.user?.name?.charAt(0)?.toUpperCase()}
             </Avatar>
           </Box>
         </Toolbar>
@@ -156,7 +159,7 @@ useEffect(() => {
               }}
               to="/MyProfile"
             >
-              {user?.name || "Unknown User"}
+              {currntUser?.user?.name || "Unknown User"}
             </Link>
           </Box>
           <Button

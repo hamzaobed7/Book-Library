@@ -9,6 +9,7 @@ export default function DataProvider({ children }) {
   const [trendBook, SetTrendBook] = useState([]);
   const [hasBook, setHasBook] = useState([]);
   const [users, setUsers] = useState();
+  const [currntUser, SetCurrntUser] = useState([]);
   const [hasNoBook, setHasNoBook] = useState([]);
   const [books, setBook] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -16,7 +17,18 @@ export default function DataProvider({ children }) {
     const loadData = async () => {
       setLoading(true);
       try {
-        await Promise.all([fetchAuthors(), fetchBooks(), fetchCategories(), fetchStocks(), FetechCategoryHasBook(), FetechAuthorHasNoBook(), FetechUsersCount(), FetechStockCount(), FetechTake()]);
+        await Promise.all([
+          FetechcurrntUser(),
+          fetchAuthors(),
+          fetchBooks(),
+          fetchCategories(),
+          fetchStocks(),
+          FetechCategoryHasBook(),
+          FetechAuthorHasNoBook(),
+          FetechUsersCount(),
+          FetechStockCount(),
+          FetechTake(),
+        ]);
       } catch (error) {
         console.log("Error data:", error);
       } finally {
@@ -108,8 +120,17 @@ export default function DataProvider({ children }) {
       console.log(error);
     }
   };
- 
- 
+
+  const FetechcurrntUser = async () => {
+    try {
+      const response = await api.get("/user");
+      SetCurrntUser(response.data.data);
+    
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const bookCount = books.length;
   const AuthorCount = authors.length;
   const CategoryCount = categories.length;
@@ -134,7 +155,8 @@ export default function DataProvider({ children }) {
         CategoryCount,
         fetchCategories,
         fetchBooks,
-        trendBook
+        trendBook,
+        currntUser
       }}
     >
       {children}
