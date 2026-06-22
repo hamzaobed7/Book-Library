@@ -1,4 +1,4 @@
-import { useState} from "react";
+import { useContext, useState} from "react";
 
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -6,6 +6,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import "../Css/AddBook.css";
 import SimpleSnackbar from "../Componants/Snakbar";
 import api from "../api/axios";
+import { BookContext } from './../Context/BookContext';
+
 
 const schema = z.object({  
 name: z.string().min(3, "The Name of Categpry must be grater than 3").max(20,"lower than 30 characters"),
@@ -14,11 +16,12 @@ description: z.string().min(5, "The description is too short").max(250, "The des
 
 export default function AddCategory() {
   const [open, setOpen] = useState(false);
+   const [mes, setMes] = useState("");
   const { register, handleSubmit,reset, formState: { errors } } = useForm({
     resolver: zodResolver(schema)
   });
 
-  const handleClick = () => setOpen(true);
+const {fetchCategories}=useContext(BookContext)
   const handleClose = (event, reason) => {
     if (reason === "clickaway") return;
     setOpen(false);
@@ -33,9 +36,14 @@ export default function AddCategory() {
     try {
       const response = await api.post("/categories", formattedData);
       setOpen(true);
+      setMes("The Category Added Successful")
       reset();
+      fetchCategories()
     } catch (error) {
       console.log("ERROR:", error.response?.data || error.message);
+      setMes(error.response?.data.message || error.message);
+      setOpen(true);
+      
     }
   };
 
@@ -55,7 +63,7 @@ export default function AddCategory() {
         </form>
       </div>
 
-      <SimpleSnackbar message={"Category Added Successfully"} handleClose={handleClose} open={open} />
+      <SimpleSnackbar message={mes} handleClose={handleClose} open={open} />
     </>
   );
 }

@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, use } from "react";
 import { DataContext } from "../Context/ApiContext";
 import SimpleSnackbar from "../Componants/Snakbar";
 import { useForm, Controller } from "react-hook-form";
@@ -21,6 +21,7 @@ import {
   Button, 
   CircularProgress 
 } from "@mui/material";
+import { BookContext } from "../Context/BookContext";
 
 const schema = z.object({
   quantity: z.coerce
@@ -37,7 +38,7 @@ export default function EditeIncreamntal() {
   const [color, setColor] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const { books,fetchStocks } = useContext(DataContext);
+  const {books,fetchStocks }=useContext(BookContext);
   const bookList = books?.data ?? books ?? []; 
 
   const {

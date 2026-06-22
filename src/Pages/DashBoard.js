@@ -13,13 +13,15 @@ import TableBooks from "../Componants/TableUpdateBooks";
 import PersonIcon from "@mui/icons-material/Person";
 import ArrowOutwardIcon from "@mui/icons-material/ArrowOutward";
 import Charts from "../Componants/Charts";
+import { BookContext } from "../Context/BookContext";
 const data = [
   { month: "January", books: 10 },
   { month: "February", books: 15 },
   { month: "March", books: 20 },
 ];
 export default function Dashboard({ Bookc, AuthorC, user }) {
-  const { bookCount, AuthorCount, CategoryCount, hasNoBook, users, StockCount } = useContext(DataContext);
+  const {  hasNoBook, users, StockCount } = useContext(DataContext);
+  const {bookCount, AuthorCount, CategoryCount}=useContext(BookContext)
   return (
     <>
       <section className="data-of-project" style={{ padding: "20px", textAlign: "center" }}>

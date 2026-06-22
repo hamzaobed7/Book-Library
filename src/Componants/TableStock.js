@@ -10,9 +10,10 @@ import Chip from "@mui/material/Chip";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import { useContext } from "react";
+import { BookContext } from "../Context/BookContext";
 
 export default function TableStock(){
-    const { books, Stock} = useContext(DataContext);
+    const { books, Stock} = useContext(BookContext);
   const stockList = Stock ? (Array.isArray(Stock) ? Stock : Stock.data ?? []) : [];
   const recentStockLogs = stockList.slice(-5).reverse();
 return(<>

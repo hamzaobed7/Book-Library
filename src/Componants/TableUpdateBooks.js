@@ -10,8 +10,9 @@ import Chip from "@mui/material/Chip";
 import { ItemPaper } from "./themItem";
 import { useContext } from "react";
 import { DataContext } from "../Context/ApiContext";
+import { BookContext } from "../Context/BookContext";
 export default function TableBooks(){
-     const { books} = useContext(DataContext);
+     const { books} = useContext(BookContext);
       const recentBooks = books ? books.slice(-4).reverse() : [];
 return(<>
  <ItemPaper>

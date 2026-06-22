@@ -2,11 +2,9 @@ import { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 export const AuthContext = createContext();
 export default function AuthProvider({ children }) {
+
   const [token, setToken] = useState(localStorage.getItem("token"));
     const navigate = useNavigate();
-    
-
-
     const login = (data) => {
     const accessToken = data.access_token || data.token;
     const expiryTime = Date.now() + 60*60*1000;

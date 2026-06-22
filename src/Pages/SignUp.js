@@ -5,7 +5,7 @@ import * as z from "zod";
 import { useState } from "react";
 import api from "../api/axios";
 import SimpleSnackbar from "../Componants/Snakbar";
-
+import "../Css/Login.css";
 import { 
   TextField, 
   Button, 
@@ -105,10 +105,7 @@ export default function Signup() {
 
   return (
     <Box sx={{ backgroundColor: "#f4f6f8", minHeight: "100vh", py: 6 }}>
-     
       <Container maxWidth="md">
-        
-       
         <Box 
           sx={{ 
             textTransform: "none", 

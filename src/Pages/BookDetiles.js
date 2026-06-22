@@ -18,7 +18,6 @@ import {
   ListItemIcon,
 } from "@mui/material";
 
-// Icons for a professional dashboard look
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import PrintIcon from "@mui/icons-material/Print";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
@@ -39,14 +38,12 @@ export default function BookDetiles() {
   const getBookdetails = async () => {
     try {
       setLoading(true);
-
       const [bookRes] = await Promise.all([
         api.get(`books/${id}`),
       ]);
 
       setData(bookRes.data?.data ?? bookRes.data);
       setCategory(bookRes.data?.data?.category ?? bookRes.data?.category ?? null);
-
     } catch (error) {
       console.log("Error fetching book components:", error);
     } finally {
@@ -88,7 +85,7 @@ export default function BookDetiles() {
         p: { xs: 2, md: 4 }, 
         background: "#f8fafc", 
         minHeight: "100vh",
-        fontFamily: "'Inter', 'Roboto', 'Segoe UI', sans-serif", // تطبيق الخط الرئيسي هنا ليرثه كل التطبيق
+        fontFamily: "'Inter', 'Roboto', 'Segoe UI', sans-serif",
         "@media print": {
           p: 0,
           background: "#fff",
@@ -97,7 +94,6 @@ export default function BookDetiles() {
         }
       }}
     >
-      
       <Card 
         className="no-print"
         sx={{ 
@@ -140,7 +136,6 @@ export default function BookDetiles() {
       </Card>
 
       <Grid container spacing={3} sx={{ "@media print": { display: "block" } }}>
-        
         <Grid item xs={12} md={7} lg={8} sx={{ "@media print": { width: "100%", mb: 4 } }}>
           <Card sx={{ borderRadius: "16px", border: "1px solid #e2e8f0", boxShadow: "0 4px 20px rgba(0,0,0,0.02)" }}>
             <Box sx={{ p: 4 }}>
@@ -158,10 +153,11 @@ export default function BookDetiles() {
                 </ListItem>
                 <Divider component="li" />
 
-                <Box component="li" sx={{ listStyleType: "none" }}>
+                {/* 1. تم تعديل المكون هنا ليتحول إلى div بدلاً من إحداث تداخل li معقد */}
+                <Box sx={{ listStyleType: "none", py: 1 }}>
                   <Grid container spacing={2}>
                     <Grid item xs={12} sm={6}>
-                      <ListItem sx={{ px: 0, py: 2 }}>
+                      <Box sx={{ display: "flex", alignItems: "center", py: 2 }}>
                         <ListItemIcon sx={{ minWidth: 40 }}><FolderOpenIcon sx={{ color: "#3b82f6" }} /></ListItemIcon>
                         <ListItemText 
                           primary={<Typography variant="body2" color="text.secondary" fontWeight="500" sx={{ fontFamily: "inherit" }}>Category</Typography>}
@@ -171,16 +167,16 @@ export default function BookDetiles() {
                             </Typography>
                           }
                         />
-                      </ListItem>
+                      </Box>
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                      <ListItem sx={{ px: 0, py: 2 }}>
+                      <Box sx={{ display: "flex", alignItems: "center", py: 2 }}>
                         <ListItemIcon sx={{ minWidth: 40 }}><LocalOfferIcon sx={{ color: "#10b981" }} /></ListItemIcon>
                         <ListItemText 
                           primary={<Typography variant="body2" color="text.secondary" fontWeight="500" sx={{ fontFamily: "inherit" }}>Retail Price</Typography>}
                           secondary={<Typography variant="h6" component="span" fontWeight="700" color="#10b981" sx={{ mt: 0.5, display: "block", fontFamily: "inherit" }}>${data.rental_price}</Typography>}
                         />
-                      </ListItem>
+                      </Box>
                     </Grid>
                   </Grid>
                 </Box>
@@ -189,7 +185,8 @@ export default function BookDetiles() {
                 <ListItem sx={{ px: 0, py: 2 }}>
                   <ListItemIcon sx={{ minWidth: 40 }}><StorageIcon sx={{ color: "#f59e0b" }} /></ListItemIcon>
                   <ListItemText 
-                    component="div"
+                    // 2. تم إضافة السطر التالي لمنع تداخل div بداخل p في التنسيق الداخلي
+                    secondaryTypographyProps={{ component: "div" }}
                     primary={<Typography variant="body2" color="text.secondary" fontWeight="500" sx={{ fontFamily: "inherit" }}>Stock Availability Status</Typography>}
                     secondary={
                       <Stack direction="row" alignItems="center" spacing={2} sx={{ mt: 0.5 }}>
@@ -281,7 +278,6 @@ export default function BookDetiles() {
             </Box>
           </Card>
         </Grid>
-
       </Grid>
     </Box>
   );

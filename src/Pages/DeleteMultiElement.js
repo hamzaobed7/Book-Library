@@ -6,6 +6,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import SimpleSnackbar from "../Componants/Snakbar";
 import SelectionItem from "../Componants/SelectionItem";
 import AutoComplete from './../Componants/AutoComplete';
+import { BookContext } from "../Context/BookContext";
 
 export default function DeleteMultiElement() {
   const [selection, setSelection] = useState("Author");
@@ -14,7 +15,7 @@ export default function DeleteMultiElement() {
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [open, setOpen] = useState(false);
 
-  const { books = [], authors = [], fetchBooks, fetchAuthors, fetchCategories } = useContext(DataContext);
+  const { books = [], authors = [], fetchBooks, fetchAuthors, fetchCategories } = useContext(BookContext);
 
   const handleClick = () => setOpen(true);
   const handleClose = (event, reason) => {

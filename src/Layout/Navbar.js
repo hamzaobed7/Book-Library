@@ -29,7 +29,7 @@ function CollapsibleExample() {
         <Navbar.Toggle aria-controls="responsive-navbar-nav" style={{ color: "white" }} />
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav style={{ position: "relative", left: "50px" }}>
-            <Nav.Link as={NavLink} to="/GetBooks" className="a">
+            <Nav.Link as={NavLink} to="/GetBook" className="a">
               All Books
             </Nav.Link>
             <Nav.Link

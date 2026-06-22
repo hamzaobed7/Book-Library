@@ -1,10 +1,11 @@
 import { useState, useContext } from "react";
 import "../Css/AddBook.css";
-import { DataContext } from "../Context/ApiContext";
+
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import SimpleSnackbar from "../Componants/Snakbar";
+import { BookContext } from './../Context/BookContext';
 const schema = z.object({
   first_name: z.string("must be string").max(30, "the name is very long").min(3, "the name is Very small"),
   last_name: z.string("must be string").max(30, "the name is very long").min(3, "the name is Very small"),
@@ -14,7 +15,7 @@ const schema = z.object({
   bio: z.string("enter the bio").max(200, "the bio is very long").min(3, "the bio must be grater than 3"),
 });
 export default function AddAuthor() {
-  const { authors } = useContext(DataContext);
+  const { authors } = useContext(BookContext);
   const [ms, Setms] = useState("");
   const [color, setcolor] = useState("");
   const [open, setOpen] = useState(false);
@@ -51,12 +52,14 @@ export default function AddAuthor() {
       ...data,
       birth_date: data.birth_date.toISOString().split("T")[0],
     };
-
+     
+    const token=localStorage.getItem('token')
     try {
       const response = await fetch("http://127.0.0.1:8000/api/authors", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
           Accept: "application/json",
         },
         body: JSON.stringify(formattedData),
@@ -67,6 +70,9 @@ export default function AddAuthor() {
       reset();
     } catch (error) {
       console.log("ERROR:", error);
+       Setms(error.response?.data.message || error.message);
+      setcolor("error");
+      setOpen(true);
     }
   };
 
@@ -101,7 +107,7 @@ export default function AddAuthor() {
 
           <input type="text" placeholder="Bio" {...register("bio")} required className="input-form" />
           <p style={{ color: "red" }}>{errors.bio?.message}</p>
-          {/* Date */}
+         
           <input type="date" {...register("birth_date")} required className="input-form-date" />
           <p style={{ color: "red" }}>{errors.birth_date?.message}</p>
 

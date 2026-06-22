@@ -6,26 +6,25 @@ import CardActionArea from "@mui/material/CardActionArea";
 import "../Css/boarderCard.css";
 import { useEffect, useState } from "react";
 
-function SelectActionCard({ index, name, count,icon}) {
+function SelectActionCard({ index, name, count, icon }) {
   const [selectedCard, setSelectedCard] = useState(0);
-   const [increament,SetIncreamnt]=useState(0)
+  const [increament, SetIncreamnt] = useState(0);
 
-   useEffect(()=>{
-    let interval=setInterval(()=>{
-       SetIncreamnt((prev)=>{
-        if (prev<count){
-          return prev+1
+  useEffect(() => {
+    let interval = setInterval(() => {
+      SetIncreamnt((prev) => {
+        if (prev < count) {
+          return prev + 1;
+        } else {
+          clearInterval(interval);
+          return prev;
         }
-        else{
-          clearInterval(interval)
-          return prev
-        }
-       })
-    },50)
-    return ()=>{
+      });
+    }, 50);
+    return () => {
       clearInterval(interval);
-    }
-   },[count])
+    };
+  }, [count]);
 
   return (
     <Box
@@ -37,13 +36,12 @@ function SelectActionCard({ index, name, count,icon}) {
       }}
     >
       <Card
-      className="BoarderCard"
+        className="BoarderCard"
         sx={{
           borderRadius: "25px",
           overflow: "hidden",
 
-          background:
-            "linear-gradient(135deg,rgb(27, 50, 120),rgb(68, 107, 255))",
+          background: "linear-gradient(135deg,rgb(27, 50, 120),rgb(68, 107, 255))",
 
           color: "white",
 
@@ -84,7 +82,6 @@ function SelectActionCard({ index, name, count,icon}) {
               justifyContent: "space-between",
             }}
           >
-         
             <Box
               sx={{
                 display: "flex",
@@ -105,7 +102,6 @@ function SelectActionCard({ index, name, count,icon}) {
               {icon}
             </Box>
 
-          
             <Box>
               <Typography
                 variant="h3"

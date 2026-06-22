@@ -37,23 +37,28 @@ export default function Login() {
     setOpen(false);
   };
   
-  const onSubmit = async (data) => {
-    try {
-      const response = await api.post("/login", data);
-      console.log(response)
-      login(response.data.data);
-      navigate("/", { replace: true });
-    } catch (error) {
-      console.error("Login failed:", error);
-      SetMes("Login failed. your email or password incorrect .");
-    reset({
-    email: "",
-    password: ""
-  });
-      setOpen(true);
-      setColor("error")
+ const onSubmit = async (data) => {
+  try {
+    const response = await api.post("/login", data);
+    login(response.data.data);
+    const userData =response.data.data.type;
+    if (userData && userData=== 'customer') {
+      navigate("/main");
+    } else {
+      navigate("/dashboard", { replace: true });
     }
-  };
+
+  } catch (error) {
+    console.error("Login failed:", error);
+    SetMes("Login failed. Your email or password incorrect.");
+    reset({
+      email: "",
+      password: ""
+    });
+    setOpen(true);
+    setColor("error");
+  }
+};
 
   return (
     <>

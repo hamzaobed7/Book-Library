@@ -1,8 +1,9 @@
-import { DataContext } from "../Context/ApiContext";
+
 import { useContext } from "react";
+import { BookContext } from "../Context/BookContext";
 export default function Aside({category,SetCategory}){
- const {hasBook } = useContext(DataContext);
- console.log(hasBook)
+ const {hasBook } = useContext(BookContext);
+
 return(<>
  <aside className="sidebar">
         <h2 className="sidebar-title">Categories</h2>

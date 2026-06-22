@@ -1,20 +1,18 @@
-import React, { useState, useEffect } from "react";
-import { Box, Container, Paper, Typography, Avatar, TextField, Button, Grid, Tabs, Tab, IconButton, InputAdornment, Divider, CircularProgress, Fade } from "@mui/material";
+import React, { useState, useEffect, useContext } from "react";
+import { Box, Container, Paper, Typography, Avatar, TextField, Button, Grid, Tabs, Tab, IconButton, InputAdornment, Divider, CircularProgress } from "@mui/material";
 import { Person as PersonIcon, Lock as LockIcon, Visibility, VisibilityOff, PhotoCamera, Save as SaveIcon, VpnKey as KeyIcon } from "@mui/icons-material";
 import api from "../api/axios";
 import SimpleSnackbar from "../Componants/Snakbar";
-
-function CustomTabPanel({ children, value, index, ...other }) {
-  return (
-    <div role="tabpanel" hidden={value !== index} id={`profile-tabpanel-${index}`} {...other}>
-      {value === index && (
-        <Fade in={value === index} timeout={400}>
-          <Box sx={{ p: { xs: 3, sm: 4 } }}>{children}</Box>
-        </Fade>
-      )}
-    </div>
-  );
-}
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { stringToColor } from "../Componants/backColor";
+import CustomTabPanel from "../Componants/CustumPanal";
+import { AuthonticationContext } from "../Context/AuthonticationContext";
+const schema = z.object({
+  name: z.string().min(3, "must be greater than 3").max(30, "must be lower than 30"),
+  email: z.string().email("Invalid email address"),
+});
 
 export default function Profile() {
   const [activeTab, setActiveTab] = useState(0);
@@ -22,6 +20,7 @@ export default function Profile() {
   const [opens, setOpens] = useState(false);
   const [mess, SetMes] = useState("");
   const [color, setColor] = useState("success");
+
   const [profileData, setProfileData] = useState({ name: "", email: "" });
   const [passwordData, setPasswordData] = useState({
     current_password: "",
@@ -29,82 +28,63 @@ export default function Profile() {
     new_password_confirmation: "",
   });
 
-
-
   const [showCurrent, setShowCurrent] = useState(false);
   const [showNew, setShowNew] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
-  //هون بيختار لون حسب اسم الشخص بساويها هيكسا ديسمل بعدين بيدمجهن ليصير لون
-  const stringToColor = (string) => {
-    let hash = 0;
-    if (!string) return "#4a90e2";
-    for (let i = 0; i < string.length; i++) {
-      hash = string.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    let color = "#";
-    for (let i = 0; i < 3; i++) {
-      const value = (hash >> (i * 8)) & 0xff;
-      color += `00${value.toString(16)}`.slice(-2);
-    }
-    return color;
-  };
 
+  const { currntUser, FetechcurrntUser } = useContext(AuthonticationContext);
 
-//مشان جيب بيانات المستخدم
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(schema),
+  });
+
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        setLoading(true);
-        const res = await api.get("/user");
-        if (res.data?.data?.user) {
-          setProfileData({
-            name: res.data.data.user.name,
-            email: res.data.data.user.email,
-          });
-        }
-      } catch (err) {
-        showToast("Failed to load user data", "error");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchUserData();
+    if (FetechcurrntUser) {
+      FetechcurrntUser();
+    }
   }, []);
 
+  useEffect(() => {
+    if (currntUser?.user) {
+      const uName = currntUser.user.name || "";
+      const uEmail = currntUser.user.email || "";
 
+      setProfileData({ name: uName, email: uEmail });
 
+      setValue("name", uName);
+      setValue("email", uEmail);
+    }
+  }, [currntUser, setValue]);
 
-  //مشان رسالة السناكبار 
   const showToast = (message, severity) => {
     SetMes(message);
     setColor(severity);
     setOpens(true);
   };
 
-
-//مشان ينتقل من profile للسيكيروتي
   const handleTabChange = (event, newValue) => {
     setActiveTab(newValue);
-  };
-
-  const handleProfileChange = (e) => {
-    setProfileData({ ...profileData, [e.target.name]: e.target.value });
   };
 
   const handlePasswordChange = (e) => {
     setPasswordData({ ...passwordData, [e.target.name]: e.target.value });
   };
 
-
-
-  //Update Profile
-  const handleUpdateProfile = async (e) => {
-    e.preventDefault();
+  // تحديث بيانات الحساب
+  const handleUpdateProfile = async (data) => {
     try {
       setLoading(true);
-      const res = await api.put("/profile/update", profileData);
+      const res = await api.patch("/admin/profile", data);
       showToast(res.data?.message || "Profile updated successfully", "success");
+
+      setProfileData({ name: data.name, email: data.email });
+      if (FetechcurrntUser) FetechcurrntUser();
     } catch (err) {
       showToast(err.response?.data?.message || "Error updating profile", "error");
     } finally {
@@ -112,8 +92,7 @@ export default function Profile() {
     }
   };
 
-
-  //Update Password
+  // تحديث كلمة المرور
   const handleUpdatePassword = async (e) => {
     e.preventDefault();
     if (passwordData.new_password !== passwordData.new_password_confirmation) {
@@ -132,18 +111,14 @@ export default function Profile() {
     }
   };
 
-  if (loading && !profileData.name) {
+  // حماية من الـ Crash في حال كانت البيانات لم تـُجلب بعد
+  if (!currntUser?.user && loading) {
     return (
       <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "80vh" }}>
         <CircularProgress size={45} thickness={4} sx={{ color: "#4a90e2" }} />
       </Box>
     );
   }
-
-
-
-
-
 
   return (
     <Container maxWidth="lg" sx={{ mt: 6, mb: 6 }}>
@@ -198,7 +173,6 @@ export default function Profile() {
             </IconButton>
           </Box>
 
-
           <Typography variant="h5" sx={{ mt: 2.5, fontWeight: "700", letterSpacing: "-0.5px" }}>
             {profileData.name || "User Profile"}
           </Typography>
@@ -206,8 +180,6 @@ export default function Profile() {
             {profileData.email || "Loading email..."}
           </Typography>
         </Box>
-
-
 
         <Tabs
           value={activeTab}
@@ -223,31 +195,46 @@ export default function Profile() {
           <Tab icon={<LockIcon sx={{ fontSize: 20 }} />} iconPosition="start" label="Security" sx={{ fontWeight: "600", py: 2 }} />
         </Tabs>
 
-
-
+        {/* Account Panel */}
         <CustomTabPanel value={activeTab} index={0}>
-          <Box component="form" onSubmit={handleUpdateProfile}>
+          <Box component="form" onSubmit={handleSubmit(handleUpdateProfile)}>
             <Typography variant="subtitle1" sx={{ mb: 3, fontWeight: "700", color: "#0f172a", display: "flex", alignItems: "center", gap: 1 }}>
               <PersonIcon sx={{ color: "#4a90e2" }} /> Personal Details
             </Typography>
             <Grid container direction="column" spacing={2.5}>
-              <Grid >
-                <TextField fullWidth label="Full Name" name="name" value={profileData.name} onChange={handleProfileChange} required sx={{ "& .MuiOutlinedInput-root": { borderRadius: "12px" } }} />
+              <Grid item>
+                <TextField
+                  fullWidth
+                  label="Full Name"
+                  error={!!errors.name}
+                  helperText={errors.name?.message}
+                  {...register("name")}
+                  InputLabelProps={{ shrink: true }}
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: "12px",
+                    },
+                  }}
+                />
               </Grid>
-              <Grid >
+              <Grid item>
                 <TextField
                   fullWidth
                   label="Email Address"
-                  name="email"
                   type="email"
-                  value={profileData.email}
-                  onChange={handleProfileChange}
-                  required
-                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: "12px" } }}
+                  error={!!errors.email}
+                  helperText={errors.email?.message}
+                  {...register("email")}
+                  InputLabelProps={{ shrink: true }}
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: "12px",
+                    },
+                  }}
                 />
               </Grid>
 
-              <Grid  sx={{ mt: 1 }}>
+              <Grid item sx={{ mt: 1 }}>
                 <Divider sx={{ mb: 2.5 }} />
                 <Button
                   type="submit"
@@ -273,16 +260,14 @@ export default function Profile() {
           </Box>
         </CustomTabPanel>
 
-
-
-             {/* Security */}
+        {/* Security Panel */}
         <CustomTabPanel value={activeTab} index={1}>
           <Box component="form" onSubmit={handleUpdatePassword}>
             <Typography variant="subtitle1" sx={{ mb: 3, fontWeight: "700", color: "#0f172a", display: "flex", alignItems: "center", gap: 1 }}>
               <KeyIcon sx={{ color: "#1e293b" }} /> Update Password
             </Typography>
             <Grid container direction="column" spacing={2.5}>
-              <Grid >
+              <Grid item>
                 <TextField
                   fullWidth
                   label="Current Password"
@@ -304,7 +289,7 @@ export default function Profile() {
                 />
               </Grid>
 
-              <Grid >
+              <Grid item>
                 <TextField
                   fullWidth
                   label="New Password"
@@ -326,7 +311,7 @@ export default function Profile() {
                 />
               </Grid>
 
-              <Grid >
+              <Grid item>
                 <TextField
                   fullWidth
                   label="Confirm New Password"
@@ -348,7 +333,7 @@ export default function Profile() {
                 />
               </Grid>
 
-              <Grid  sx={{ mt: 1 }}>
+              <Grid item sx={{ mt: 1 }}>
                 <Divider sx={{ mb: 2.5 }} />
                 <Button
                   type="submit"

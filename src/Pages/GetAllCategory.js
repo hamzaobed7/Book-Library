@@ -12,14 +12,15 @@ import {
   Box,
 } from "@mui/material";
 
-import { DataContext } from "../Context/ApiContext";
+
 import DeleteIcon from "@mui/icons-material/Delete";
 import DraggableDialog from "../Componants/Contest";
 import api from "../api/axios";
 import SimpleSnackbar from "../Componants/Snakbar";
+import { BookContext } from "../Context/BookContext";
 
 export default function GetAllCategory() {
-  const { categories,fetchCategories } = useContext(DataContext);
+  const { categories,fetchCategories } = useContext(BookContext);
 
   const [color, setColor] = useState("");
   const [mess, SetMes] = useState("");

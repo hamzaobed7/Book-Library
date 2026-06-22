@@ -20,7 +20,6 @@ import {
 import SearchIcon from "@mui/icons-material/Search";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import api from "../api/axios";
-
 export default function SearchPage() {
   const initialFilters = {
     title: "",

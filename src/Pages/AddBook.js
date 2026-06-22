@@ -1,5 +1,4 @@
 import { useState, useContext } from "react";
-import { DataContext } from "../Context/ApiContext";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -9,7 +8,7 @@ import api from "../api/axios";
 import { Box, CircularProgress } from "@mui/material"; 
 import Button from "@mui/material/Button";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-
+import { BookContext } from './../Context/BookContext';
 const MAX_FILE_SIZE = 2 * 1024 * 1024;
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
@@ -37,9 +36,9 @@ const schema = z.object({
 
 export default function AddBook() {
   const [open, setOpen] = useState(false);
+  const [mes ,SetMes]=useState("")
   const [isSubmitting, setIsSubmitting] = useState(false); 
-  const { categories = [], authors = [], fetchBooks } = useContext(DataContext);
-
+  const { categories = [], authors = [], fetchBooks } = useContext(BookContext);
   const {
     register,
     handleSubmit,
@@ -105,12 +104,14 @@ export default function AddBook() {
       });
 
       setOpen(true);
+      SetMes("Book Added Successfully")
       reset();
       if (fetchBooks) {
         fetchBooks();
       }
     } catch (error) {
       console.log("ERROR:", error.response?.data || error.message);
+      SetMes(error.message)
     } finally {
       setIsSubmitting(false); 
     }
@@ -262,7 +263,7 @@ export default function AddBook() {
         </form>
       </div>
 
-      <SimpleSnackbar message={"Book Added Successfully"} handleClick={handleClick} handleClose={handleClose} open={open} />
+      <SimpleSnackbar message={mes} handleClick={handleClick} handleClose={handleClose} open={open} />
     </>
   );
 }

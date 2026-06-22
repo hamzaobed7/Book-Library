@@ -3,14 +3,16 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import PersonIcon from "@mui/icons-material/Person";
 import { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import NotificationIconWithBadge from "../Componants/Notifications";
-import { AuthContext } from "../auth/AuthContext";
 import { useEffect } from "react";
-import { AuthonticationContext } from "../Context/AuthonticationContext";
+
+import NotificationIconWithBadge from "../../Componants/Notifications";
+import { AuthContext } from "../../auth/AuthContext";
+import CartCount from "../../Componants/CartCount";
+import { AuthonticationContext } from "../../Context/AuthonticationContext";
 export default function AppBars() {
   const [activat, SetActivat] = useState(false);
   const { logout } = useContext(AuthContext);
-  const { currntUser,FetechcurrntUser } = useContext(AuthonticationContext);
+  const { Profile,FetechProfile } = useContext(AuthonticationContext);
 
   const navigate = useNavigate();
   const handleLogout = () => {
@@ -21,8 +23,8 @@ export default function AppBars() {
   const [imagePreview, setImagePreview] = useState("");
    
   useEffect(()=>{
-    if(FetechcurrntUser){
-      FetechcurrntUser();
+    if(FetechProfile){
+      FetechProfile();
     }
   },[])
   return (
@@ -56,7 +58,7 @@ export default function AppBars() {
                 fontWeight: "bold",
               }}
             >
-              Admin Dashboard
+               Dashboard
             </Typography>
           </Box>
           <Box
@@ -66,10 +68,13 @@ export default function AppBars() {
             }}
           >
             <NotificationIconWithBadge />
-
+            
+         <Link to="/cart" style={{textDecoration:"none",fontSize:'30px'}}  >
+         <CartCount/>
+         </Link>
             <Avatar
               onClick={() => SetActivat(!activat)}
-              src={`http://127.0.0.1:8000/storage/customer_images/${imagePreview}`}
+              src={`http://127.0.0.1:8000/storage/customer_images/${Profile?.cover}`}
               sx={{
                 bgcolor: "#2563eb",
                 width: 50,
@@ -82,7 +87,7 @@ export default function AppBars() {
                 },
               }}
             >
-              {currntUser?.user?.name?.charAt(0)?.toUpperCase()}
+              {Profile?.name?.charAt(0)?.toUpperCase()}
             </Avatar>
           </Box>
         </Toolbar>
@@ -125,9 +130,9 @@ export default function AppBars() {
                 textDecoration: "none",
                 color: "black",
               }}
-              to="/MyProfile"
+              to="/CustomerProfile"
             >
-              {currntUser?.user?.name || "Unknown User"}
+              {Profile?.name || "Unknown User"}
             </Link>
           </Box>
           <Button
