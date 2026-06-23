@@ -47,38 +47,40 @@ export default function CustomerProfile() {
   });
 
   const coverFile = watch("cover");
+  useEffect(() => {
+    if (!coverFile?.length) return;
+    const url = URL.createObjectURL(coverFile[0]);
+    setAvatarPreview(url);
+    return () => URL.revokeObjectURL(url);
+  }, [coverFile]);
+
+  
+
 useEffect(() => {
-  if (!coverFile?.length) return;
-  const url = URL.createObjectURL(coverFile[0]);
-  setAvatarPreview(url);
-  return () => URL.revokeObjectURL(url);
-}, [coverFile]);
+  if (FetechProfile) {
+    FetechProfile();
+  }
+}, []);
 
-  useEffect(() => {
-    if (FetechProfile) {
-      FetechProfile();
+
+useEffect(() => {
+  if (Profile) {
+    setValue("name", Profile.name || "");
+    setValue("email", Profile.email || "");
+    setValue("phone", Profile.phone || "");
+    setValue("gender", Profile.gender || "");
+    setValue("lang", Profile.lang || "");
+    
+    if (Profile.DOB) {
+      setValue("DOB", Profile.DOB);
     }
-  }, []);
 
-  useEffect(() => {
-    if (Profile) {
-      const user = Profile;
-
-      setValue("name", user.name || "");
-      setValue("email", user.email || "");
-      setValue("phone", user.phone || "");
-      setValue("gender", user.gender || "");
-      setValue("lang", user.lang || "");
-      if (user.DOB) {
-        setValue("DOB", user.DOB);
-      }
-
-      if (user.cover) {
-        const fullImageUrl = `${imageBaseUrl}/${user.cover}`;
-        setAvatarPreview(fullImageUrl);
-      }
+    if (Profile.cover) {
+      const fullImageUrl = `${imageBaseUrl}/${Profile.cover}`;
+      setAvatarPreview(fullImageUrl);
     }
-  }, [Profile, setValue]);
+  }
+}, [Profile, setValue]); 
 
   const showToast = (message, severity) => {
     SetMes(message);
@@ -116,7 +118,7 @@ useEffect(() => {
     }
   };
 
-  if ( loading) {
+  if (loading) {
     return (
       <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "80vh" }}>
         <CircularProgress size={45} thickness={4} sx={{ color: "#4a90e2" }} />

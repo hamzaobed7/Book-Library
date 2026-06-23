@@ -10,7 +10,6 @@ export default function BookProvider({ children }) {
   const [hasBook, setHasBook] = useState([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
-    const token = localStorage.getItem("token");
     const loadData = async () => {
       setLoading(true);
       try {

@@ -1,5 +1,7 @@
 import { useState, useEffect, createContext } from "react";
 import api from "../api/axios";
+import { useContext } from "react";
+import { AuthContext } from "../auth/AuthContext";
 
 export const AuthonticationContext = createContext();
 export default function AuthonticationProvider({ children }) {
@@ -7,20 +9,34 @@ export default function AuthonticationProvider({ children }) {
   const [Profile, SetProfile] = useState(null);
   const [currntUser, SetCurrntUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    const loadData = async () => {
-      setLoading(true);
-      try {
-        await Promise.all([FetechcurrntUser(), FetechAllCustomer(), FetechProfile()]);
-      } catch (error) {
-        console.log("Error data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadData();
-  }, []);
+  const { token } = useContext(AuthContext);
+
+
+
+useEffect(() => {
+  if (!token) {
+    SetCurrntUser(null);
+    setLoading(false);
+    return;
+  }
+
+  const loadData = async () => {
+    setLoading(true);
+
+    try {
+      await Promise.all([
+        FetechcurrntUser(),
+        FetechAllCustomer(),
+        FetechProfile(),
+      ]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  loadData();
+}, [token]);
+
 
   const FetechcurrntUser = async () => {
     try {

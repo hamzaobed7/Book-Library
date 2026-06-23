@@ -11,6 +11,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import {Link, useLocation } from "react-router-dom";
+import ReceiptIcon from '@mui/icons-material/Receipt';
 import CampaignIcon from '@mui/icons-material/Campaign';
 const drawerWidth = 260;
 export default function Drawers(){
@@ -30,6 +31,7 @@ export default function Drawers(){
     { text: "Search", icon: <SearchIcon/>, path: "/search" },
     { text: "All Request", icon: <CampaignIcon/>, path: "/allRequest" },
     { text: "All Customer", icon: <PersonIcon/>, path: "/allCustomer" },
+    { text: "All invoices", icon: <ReceiptIcon/>, path: "/invoices" },
 
 
   ];

@@ -5,12 +5,19 @@ import { CartItemRow } from "./CartItems";
 import { OrderSummary } from "./Summary";
 import { EmptyCart } from "./Empty";
 import { DataContext } from "../Context/ApiContext";
-
+import SimpleSnackbar from './../Componants/Snakbar';
+import { useNavigate } from "react-router-dom";
 export default function CartPage() {
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
+ 
+  const [color,SetColor]=useState("");
+  const [open,SetOpen]=useState(false);
+  const [mes,SetMes]=useState("");
+
+  const uesnavigate=useNavigate();
 
   const { FetechCountOfCart } = useContext(DataContext);
 
@@ -46,35 +53,46 @@ export default function CartPage() {
   const handleRemoveItem = async (id) => {
     try {
       setActionLoading(true);
-      await api.delete(`/cart/${id}`);
+      const res=await api.delete(`/cart/${id}`);
       const updatedCart = cartItems.filter(item => item.id !== id);
       setCartItems(updatedCart);
       if (FetechCountOfCart) {
         FetechCountOfCart();
       }
+      SetColor("error");
+      SetMes(res.data.message);
+      SetOpen(true)
       localStorage.setItem('cart', JSON.stringify(updatedCart));
     } catch (error) {
       console.error("Failed to remove item:", error);
+      SetColor("error");
+      SetMes(error.response.data.message);
+      SetOpen(true)
     } finally {
       setActionLoading(false);
     }
   };
 
+  
   const handleCheckout = async () => {
     try {
       setCheckoutLoading(true);
-      await api.post("/bill"); 
-      
+     const res=await api.post("/bill"); 
       setCartItems([]);
       localStorage.removeItem('cart');
       if (FetechCountOfCart) {
         FetechCountOfCart();
       }
-      
-      alert("Bill Created Successfully!"); 
+      SetColor("success");
+      SetMes(res.data.message);
+      SetOpen(true)
+      uesnavigate(`/customerInv/${res.data.data.id}`)
+     console.log(res)
     } catch (error) {
-      console.error("Checkout process failed:", error);
-      alert(error.response?.data?.message || "Checkout Failed, check stock quantities.");
+     
+      SetColor("error");
+      SetMes(error.response.data.message );
+      SetOpen(true)
     } finally {
       setCheckoutLoading(false);
     }
@@ -89,6 +107,7 @@ export default function CartPage() {
   }
 
   return (
+    <>
     <Box sx={{ minHeight: "100vh", bgcolor: "grey.50", py: { xs: 4, md: 8 } }}>
       <Container maxWidth="lg">
         <Typography 
@@ -116,8 +135,7 @@ export default function CartPage() {
         ) : (
           <Grid container spacing={4} alignItems="flex-start">
             
-            {/* قسم قائمة المنتجات */}
-            <Grid item xs={12} md={7.5}>
+            <Grid xs={12} md={7.5}>
               <Stack spacing={2.5}>
                 {cartItems.map((item) => (
                   <CartItemRow 
@@ -130,12 +148,13 @@ export default function CartPage() {
               </Stack>
             </Grid>
 
-            <Grid item xs={12} md={4.5} sx={{ position: { md: "sticky" }, top: 24 }}>
+            <Grid xs={12} md={4.5} sx={{ position: { md: "sticky" }, top: 24 }}>
               <OrderSummary 
                 subtotal={subtotal}
                 totalItems={totalItems}
                 onCheckout={handleCheckout}
                 isCheckingOut={checkoutLoading}
+                cartItems={cartItems}
               />
             </Grid>
             
@@ -143,5 +162,7 @@ export default function CartPage() {
         )}
       </Container>
     </Box>
+    <SimpleSnackbar color={color} open={open} message={mes} handleClose={()=>{SetOpen(false)}} />
+    </>
   );
 }

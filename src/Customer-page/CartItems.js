@@ -10,13 +10,13 @@ export const CartItemRow = ({ item, onRemove, isUpdating }) => {
   const book = item.book || {};
 
   return (
-    <Card 
-      sx={{ 
-        display: "flex", 
-        flexDirection: { xs: "column", sm: "row" }, 
+    <Card
+      sx={{
+        display: "flex",
+        flexDirection: { xs: "column", sm: "row" },
         width: "100%",
-        minHeight: { xs: "auto", sm: 180 }, 
-        borderRadius: "24px", 
+        minHeight: { xs: "auto", sm: 180 },
+        borderRadius: "24px",
         border: "1px solid",
         borderColor: "grey.100",
         boxShadow: "0px 12px 30px rgba(0, 0, 0, 0.02)",
@@ -26,36 +26,32 @@ export const CartItemRow = ({ item, onRemove, isUpdating }) => {
           boxShadow: "0px 20px 40px rgba(0, 0, 0, 0.06)",
           transform: "translateY(-3px)",
           "& .book-cover": {
-            transform: "scale(1.04)", 
-          }
-        }
+            transform: "scale(1.04)",
+          },
+        },
       }}
     >
       <Box sx={{ width: { xs: "100%", sm: 140 }, height: { xs: 220, sm: "auto" }, overflow: "hidden", position: "relative" }}>
-        <CardMedia 
+        <CardMedia
           component="img"
           className="book-cover"
-          sx={{ 
+          sx={{
             width: "100%",
             height: "100%",
             objectFit: "cover",
             transition: "transform 0.4s ease",
-          }} 
-          image={`${imageBaseUrl}/${book.cover}`} 
-          title={book.title} 
+          }}
+          image={`${imageBaseUrl}/${book.cover}`}
+          title={book.title}
         />
       </Box>
 
       <Box sx={{ display: "flex", flexDirection: "column", flex: 1, p: 3 }}>
-        
         <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 2 }}>
-          <Typography 
-            variant="h6" 
-            sx={{ fontWeight: 800, color: "text.primary", lineHeight: 1.3, fontSize: "1.1rem", letterSpacing: "-0.3px" }}
-          >
+          <Typography variant="h6" sx={{ fontWeight: 800, color: "text.primary", lineHeight: 1.3, fontSize: "1.1rem", letterSpacing: "-0.3px" }}>
             {book.title}
           </Typography>
-          
+
           <Tooltip title="Remove book" arrow placement="top">
             <IconButton
               color="error"
@@ -63,7 +59,7 @@ export const CartItemRow = ({ item, onRemove, isUpdating }) => {
               onClick={() => onRemove(item.id)}
               sx={{
                 color: "error.main",
-                bgcolor: "#ffebee", 
+                bgcolor: "#ffebee",
                 borderRadius: "12px",
                 p: 1.2,
                 transition: "all 0.2s",
@@ -79,7 +75,6 @@ export const CartItemRow = ({ item, onRemove, isUpdating }) => {
           </Tooltip>
         </Box>
 
-        {/* السطر الثاني: الميتا داتا (ISBN و الأيام) */}
         <Stack direction="row" spacing={2} sx={{ mt: 1.5, mb: 2.5 }} flexWrap="wrap" useFlexGap>
           <Box sx={{ display: "flex", alignItems: "center", gap: 0.8 }}>
             <MenuBookIcon sx={{ fontSize: 16, color: "text.disabled" }} />
@@ -95,35 +90,38 @@ export const CartItemRow = ({ item, onRemove, isUpdating }) => {
           </Box>
         </Stack>
 
-        <Box 
-          sx={{ 
-            mt: "auto", 
-            pt: 2, 
-            borderTop: "1px dashed", 
-            borderColor: "grey.200", 
-            display: "flex", 
-            justify: "space-between", 
+        <Box
+          sx={{
+            mt: "auto",
+            pt: 2,
+            borderTop: "1px dashed",
+            borderColor: "grey.200",
+            display: "flex",
+            justify: "space-between",
             justifyContent: "space-between",
-            alignItems: "center" 
+            alignItems: "center",
           }}
         >
-          <Chip 
+          <Chip
             icon={<AccountBalanceWalletIcon style={{ fontSize: 14, color: "#666" }} />}
-            label={<>Deposit: <b>${Number(book.deposit || 0).toFixed(2)}</b></>}
+            label={
+              <>
+                Deposit: <b>${Number(book.deposit || 0).toFixed(2)}</b>
+              </>
+            }
             variant="outlined"
             size="small"
-            sx={{ 
-              borderRadius: "8px", 
-              borderColor: "grey.200", 
+            sx={{
+              borderRadius: "8px",
+              borderColor: "grey.200",
               bgcolor: "#fafafa",
               px: 0.5,
               fontSize: "0.78rem",
-              color: "text.secondary"
+              color: "text.secondary",
             }}
           />
-          
-      
-          <Stack direction="row" alignItems="baseline" spacing={0.3}>
+
+          <Stack direction="row"  spacing={0.3}>
             <Typography variant="caption" sx={{ fontWeight: 600, color: "text.secondary" }}>
               Rent:
             </Typography>
@@ -132,7 +130,6 @@ export const CartItemRow = ({ item, onRemove, isUpdating }) => {
             </Typography>
           </Stack>
         </Box>
-
       </Box>
     </Card>
   );

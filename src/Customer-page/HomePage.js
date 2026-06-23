@@ -26,7 +26,7 @@ const POPULAR_BOOKS_DATA = [
   { title: "1984", author: "George Orwell", rating: "4.7" },
 ];
 
-// مكون الـ Hero Section
+
 const HeroSection = () => (
   <Box
     sx={{

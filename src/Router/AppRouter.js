@@ -32,6 +32,9 @@ import MyRequest from "../Customer-page/MyRequest.js";
 import AllRequest from "../Pages/TableOfRequset.js";
 import RequsetOfCustomer from "./../Pages/RequsetOfCustomer";
 import GetAllCustomer from "../Pages/AllCustomer.js";
+import CustomerInvoices from "../Customer-page/CustomerInvoice.js";
+import AllInvoice from "../Pages/AllInvoice.js";
+import ItemsDetails from "../Componants/ItemsDetiles.js";
 
 export default function AppRoutes() {
   return (
@@ -59,8 +62,9 @@ export default function AppRoutes() {
           <Route path="search" element={<SearchPage />} />
           <Route path="/allRequest" element={<AllRequest />} />
           <Route path="/allCustomer" element={<GetAllCustomer />} />
-
+         <Route path="/invoices" element={<AllInvoice/>}/>
           <Route path="/requstCustomer/:id" element={<RequsetOfCustomer />} />
+          <Route path="/items/:id" element={<ItemsDetails />} />
           <Route index element={<Navigate to="dashboard" replace />} />
         </Route>
       </Route>
@@ -75,6 +79,7 @@ export default function AppRoutes() {
           <Route path="BookRequest" element={<RequestBook />} />
           <Route path="MyRequest" element={<MyRequest />} />
         </Route>
+        <Route path="customerInv/:id" element={<CustomerInvoices/>} />
       </Route>
 
       <Route element={<MainEnd />}>

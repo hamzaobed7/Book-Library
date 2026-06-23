@@ -55,7 +55,6 @@ export default function GetAllAuthors() {
     }
   };
 
-  // 2. دالة الفلترة للمؤلفين (تبحث بالاسم الأول، الأخير، أو الإيميل)
   const filteredAuthors = authors?.filter((author) => {
     const searchLower = searchTerm.toLowerCase();
     return (
