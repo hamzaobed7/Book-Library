@@ -7,7 +7,7 @@ import GroupsIcon from "@mui/icons-material/Groups";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import InventoryIcon from "@mui/icons-material/Inventory";
 import { DataContext } from "../Context/ApiContext";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import TableStock from "../Componants/TableStock";
 import TableBooks from "../Componants/TableUpdateBooks";
 import PersonIcon from "@mui/icons-material/Person";
@@ -21,7 +21,12 @@ const data = [
 ];
 export default function Dashboard({ Bookc, AuthorC, user }) {
   const {  hasNoBook, users, StockCount } = useContext(DataContext);
-  const {bookCount, AuthorCount, CategoryCount}=useContext(BookContext)
+  const {bookCount, AuthorCount, CategoryCount,fetchAuthors,fetchCategories,fetchBooks}=useContext(BookContext)
+  useEffect(()=>{
+    fetchBooks();
+    fetchCategories();
+    fetchAuthors()
+  },[fetchBooks,fetchCategories,fetchAuthors])
   return (
     <>
       <section className="data-of-project" style={{ padding: "20px", textAlign: "center" }}>

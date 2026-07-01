@@ -1,27 +1,6 @@
 import React from "react";
-import {
-  Container,
-  Box,
-  Grid,
-  Typography,
-  Button,
-  Card,
-  CardMedia,
-  CardContent,
-  Chip,
-  IconButton,
-  Paper,
-  alpha,
-} from "@mui/material";
-import {
-  MenuBook,
-  LocalOffer,
-  HeadsetMic,
-  ArrowForward,
-  Star,
-  Bookmark,
-  PlayArrowRounded,
-} from "@mui/icons-material";
+import { Container, Box, Grid, Typography, Button, Card, CardMedia, CardContent, Chip, IconButton, Paper, alpha } from "@mui/material";
+import { MenuBook, LocalOffer, HeadsetMic, ArrowForward, Star, Bookmark, PlayArrowRounded } from "@mui/icons-material";
 
 const FEATURES_DATA = [
   {
@@ -135,12 +114,13 @@ const HeroSection = () => (
             letterSpacing: "-1px",
           }}
         >
-          اكتشف عالماً جديداً<br /> بين طيات الكتب
+          اكتشف عالماً جديداً
+          <br /> بين طيات الكتب
         </Typography>
         <Typography variant="h6" sx={{ mb: 5, color: "text.secondary", fontWeight: 400, lineHeight: 1.8, maxWidth: "90%" }}>
           مكتبتك الشخصية الآن أكثر ذكاءً. تصفح آلاف الكتب، احصل على اقتراحات مخصصة، وعش متعة القراءة بشكل لم يسبق له مثيل.
         </Typography>
-        
+
         <Box sx={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
           <Button
             variant="contained"
@@ -180,7 +160,7 @@ const HeroSection = () => (
           </Button>
         </Box>
       </Grid>
-      
+
       <Grid item xs={12} md={5} sx={{ display: { xs: "none", md: "block" } }}>
         <Box sx={{ position: "relative" }}>
           <Box
@@ -217,8 +197,12 @@ const HeroSection = () => (
               <Star sx={{ color: "white" }} />
             </Box>
             <Box>
-              <Typography variant="subtitle2" sx={{ fontWeight: 800 }}>+500 كتاب جديد</Typography>
-              <Typography variant="caption" color="text.secondary">تمت إضافتها هذا الأسبوع</Typography>
+              <Typography variant="subtitle2" sx={{ fontWeight: 800 }}>
+                +500 كتاب جديد
+              </Typography>
+              <Typography variant="caption" color="text.secondary">
+                تمت إضافتها هذا الأسبوع
+              </Typography>
             </Box>
           </Paper>
         </Box>
@@ -278,10 +262,7 @@ const TrendingBooksGrid = ({ books }) => (
           الكتب التي يقرؤها العالم الآن.
         </Typography>
       </Box>
-      <Button
-        endIcon={<ArrowForward />}
-        sx={{ fontWeight: 800, color: "primary.main", "&:hover": { background: "transparent", letterSpacing: "1px" }, transition: "all 0.3s" }}
-      >
+      <Button endIcon={<ArrowForward />} sx={{ fontWeight: 800, color: "primary.main", "&:hover": { background: "transparent", letterSpacing: "1px" }, transition: "all 0.3s" }}>
         اكتشف المزيد
       </Button>
     </Box>
@@ -345,11 +326,13 @@ const TrendingBooksGrid = ({ books }) => (
               >
                 <Bookmark />
               </IconButton>
-              
+
               {/* التقييم يظهر داخل الصورة من الأسفل */}
               <Box sx={{ position: "absolute", bottom: 15, left: 20, display: "flex", alignItems: "center", gap: 0.5 }}>
-                 <Star sx={{ color: "#FFD700", fontSize: 22 }} />
-                 <Typography variant="h6" sx={{ fontWeight: 800, color: "white" }}>{book.rating}</Typography>
+                <Star sx={{ color: "#FFD700", fontSize: 22 }} />
+                <Typography variant="h6" sx={{ fontWeight: 800, color: "white" }}>
+                  {book.rating}
+                </Typography>
               </Box>
             </Box>
 

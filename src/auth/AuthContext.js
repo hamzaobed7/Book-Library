@@ -2,8 +2,10 @@ import { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 export const AuthContext = createContext();
 export default function AuthProvider({ children }) {
-
+   
   const [token, setToken] = useState(localStorage.getItem("token"));
+  const [type, setType] = useState(localStorage.getItem("type"));
+
     const navigate = useNavigate();
     const login = (data) => {
     const accessToken = data.access_token || data.token;
@@ -14,6 +16,8 @@ export default function AuthProvider({ children }) {
       return;
     }
     localStorage.setItem("token", accessToken);
+    localStorage.setItem("type",data.type);
+    setType(data.type);
     setToken(accessToken);
   };
 
@@ -22,6 +26,8 @@ export default function AuthProvider({ children }) {
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("token_expiry")
+    localStorage.removeItem("type");
+    setType(null);
     setToken(null);
     navigate("/login");
   };
@@ -49,6 +55,7 @@ useEffect(() => {
       value={{
         token,
         login,
+        type,
         logout,
       }}
     >

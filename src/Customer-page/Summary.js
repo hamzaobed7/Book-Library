@@ -13,7 +13,6 @@ export const OrderSummary = ({ subtotal, totalItems, onCheckout, isCheckingOut, 
   const progressToFreeShipping = Math.min((numericSubtotal / shippingThreshold) * 100, 100);
   const amountLeftForFreeShipping = (shippingThreshold - numericSubtotal).toFixed(2);
 
-  
   return (
     <Paper
       elevation={0}

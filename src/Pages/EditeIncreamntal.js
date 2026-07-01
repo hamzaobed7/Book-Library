@@ -1,35 +1,18 @@
-import { useState, useContext, use } from "react";
+import { useState, useContext, use, useEffect } from "react";
 import { DataContext } from "../Context/ApiContext";
 import SimpleSnackbar from "../Componants/Snakbar";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import api from "../api/axios"; 
-import { 
-  Box, 
-  Card, 
-  CardContent, 
-  Typography, 
-  TextField, 
-  MenuItem, 
-  FormControl, 
-  InputLabel, 
-  Select, 
-  FormHelperText, 
-  FormControlLabel, 
-  Checkbox, 
-  Button, 
-  CircularProgress 
-} from "@mui/material";
+import api from "../api/axios";
+import { Box, Card, CardContent, Typography, TextField, MenuItem, FormControl, InputLabel, Select, FormHelperText, FormControlLabel, Checkbox, Button, CircularProgress } from "@mui/material";
 import { BookContext } from "../Context/BookContext";
 
 const schema = z.object({
-  quantity: z.coerce
-    .number({ invalid_type_error: "Quantity must be a valid number" })
-    .positive("Quantity must be greater than zero"),  
+  quantity: z.coerce.number({ invalid_type_error: "Quantity must be a valid number" }).positive("Quantity must be greater than zero"),
   remove_from_remaining: z.boolean().default(false),
   type: z.enum(["add", "destroy"], { errorMap: () => ({ message: "Please select an operation type" }) }),
-  book_id: z.string().min(1, "Please select a target book"), 
+  book_id: z.string().min(1, "Please select a target book"),
 });
 
 export default function EditeIncreamntal() {
@@ -38,9 +21,12 @@ export default function EditeIncreamntal() {
   const [color, setColor] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const {books,fetchStocks }=useContext(BookContext);
-  const bookList = books?.data ?? books ?? []; 
-
+  const { books, fetchStocks ,fetchBooks} = useContext(BookContext);
+  const bookList = books?.data ?? books ?? [];
+useEffect(()=>{
+  fetchStocks();
+  fetchBooks()
+},[fetchStocks,fetchBooks])
   const {
     control,
     handleSubmit,
@@ -53,8 +39,8 @@ export default function EditeIncreamntal() {
       quantity: "",
       remove_from_remaining: false,
       type: "",
-      book_id: ""
-    }
+      book_id: "",
+    },
   });
 
   const currentType = watch("type");
@@ -63,7 +49,7 @@ export default function EditeIncreamntal() {
 
   const onSubmit = async (data) => {
     setLoading(true);
-    
+
     const formattedData = {
       quantity: data.quantity.toString(),
       type: data.type,
@@ -72,11 +58,11 @@ export default function EditeIncreamntal() {
     };
 
     try {
-      const response = await api.post(`/remove_frome_remaining`, formattedData);      
+      const response = await api.post(`/remove_frome_remaining`, formattedData);
       setColor("success");
       setmes(response.data.message || "Stock updated successfully");
       setOpen(true);
-      if(fetchStocks){
+      if (fetchStocks) {
         fetchStocks();
       }
       reset();
@@ -96,25 +82,21 @@ export default function EditeIncreamntal() {
         <Card sx={{ width: "100%", maxWidth: "550px", borderRadius: "24px", boxShadow: "0 20px 25px -5px rgb(0 0 0 / 0.1)", border: "1px solid #f1f5f9", padding: 2 }}>
           <CardContent>
             <form onSubmit={handleSubmit(onSubmit)} noValidate>
-              
               <Typography variant="h5" component="h1" sx={{ color: primaryColor, marginBottom: "30px", fontWeight: "700", textAlign: "center", transition: "color 0.3s ease" }}>
                 {isDestroy ? "Destroy / Reduce Stock" : currentType === "add" ? "Add Stock Quantity" : "Stock Inventory Movement"}
               </Typography>
 
               <Box sx={{ display: "flex", flexDirection: "column", gap: "24px" }}>
-                
                 <Controller
                   name="book_id"
                   control={control}
                   render={({ field }) => (
                     <FormControl fullWidth error={!!errors.book_id}>
                       <InputLabel id="target-book-label">Target Book</InputLabel>
-                      <Select
-                        labelId="target-book-label"
-                        label="Target Book"
-                        {...field}
-                      >
-                        <MenuItem value=""><em>-- Select a book from the list --</em></MenuItem>
+                      <Select labelId="target-book-label" label="Target Book" {...field}>
+                        <MenuItem value="">
+                          <em>-- Select a book from the list --</em>
+                        </MenuItem>
                         {bookList.map((book) => (
                           <MenuItem key={book.id} value={String(book.id)}>
                             {book.title} ({book.ISBN || `ID: ${book.id}`})
@@ -132,12 +114,10 @@ export default function EditeIncreamntal() {
                   render={({ field }) => (
                     <FormControl fullWidth error={!!errors.type}>
                       <InputLabel id="action-type-label">Action Type</InputLabel>
-                      <Select
-                        labelId="action-type-label"
-                        label="Action Type"
-                        {...field}
-                      >
-                        <MenuItem value=""><em>-- Select operation type --</em></MenuItem>
+                      <Select labelId="action-type-label" label="Action Type" {...field}>
+                        <MenuItem value="">
+                          <em>-- Select operation type --</em>
+                        </MenuItem>
                         <MenuItem value="add">Add to Stock</MenuItem>
                         <MenuItem value="destroy">Destroy / Remove from Stock</MenuItem>
                       </Select>
@@ -168,60 +148,50 @@ export default function EditeIncreamntal() {
                     control={control}
                     render={({ field: { value, onChange, ...field } }) => (
                       <FormControlLabel
-                        control={
-                          <Checkbox 
-                            checked={!!value} 
-                            onChange={onChange} 
-                            {...field} 
-                            sx={{ color: primaryColor, '&.Mui-checked': { color: primaryColor } }}
-                          />
-                        }
-                        label={
-                          <Typography sx={{ fontSize: "14px", fontWeight: "500", color: "#334155" }}>
-                            Apply adjustments immediately to remaining inventory
-                          </Typography>
-                        }
+                        control={<Checkbox checked={!!value} onChange={onChange} {...field} sx={{ color: primaryColor, "&.Mui-checked": { color: primaryColor } }} />}
+                        label={<Typography sx={{ fontSize: "14px", fontWeight: "500", color: "#334155" }}>Apply adjustments immediately to remaining inventory</Typography>}
                       />
                     )}
                   />
                 </Box>
 
-                <Button 
-                  type="submit" 
-                  variant="contained" 
+                <Button
+                  type="submit"
+                  variant="contained"
                   disabled={loading}
                   size="large"
-                  sx={{ 
-                    background: primaryColor, 
-                    color: "#fff", 
-                    padding: "14px", 
-                    borderRadius: "12px", 
-                    fontWeight: "600", 
+                  sx={{
+                    background: primaryColor,
+                    color: "#fff",
+                    padding: "14px",
+                    borderRadius: "12px",
+                    fontWeight: "600",
                     fontSize: "16px",
                     textTransform: "none",
                     boxShadow: `0 4px 14px 0 ${primaryColor}40`,
                     transition: "all 0.3s ease",
-                    '&:hover': {
+                    "&:hover": {
                       background: primaryColor,
                       boxShadow: `0 6px 20px 0 ${primaryColor}60`,
-                    }
+                    },
                   }}
                 >
                   {loading ? <CircularProgress size={24} sx={{ color: "#fff" }} /> : "Execute Stock Transactions"}
                 </Button>
-
               </Box>
             </form>
           </CardContent>
         </Card>
       </Box>
 
-      <SimpleSnackbar 
-        message={mes} 
-        color={color} 
-        handleClick={() => setOpen(true)} 
-        handleClose={(e, reason) => { if(reason !== "clickaway") setOpen(false); }} 
-        open={open} 
+      <SimpleSnackbar
+        message={mes}
+        color={color}
+        handleClick={() => setOpen(true)}
+        handleClose={(e, reason) => {
+          if (reason !== "clickaway") setOpen(false);
+        }}
+        open={open}
       />
     </>
   );

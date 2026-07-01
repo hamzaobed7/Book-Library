@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import "../Css/AddBook.css";
 import SimpleSnackbar from "../Componants/Snakbar";
 import { useForm } from "react-hook-form";
@@ -28,9 +28,12 @@ export default function UpdateBook() {
   const [mes, setmes] = useState("");
   const [color, setColor] = useState("");
   const [selectedIsbnState, setSelectedIsbnState] = useState("");
-
-  const { categories = [], authors = [], books = [], fetchBooks } = useContext(BookContext);
-
+  const { categories = [], authors = [], books = [], fetchBooks, fetchAuthors, fetchCategories } = useContext(BookContext);
+  useEffect(() => {
+    fetchBooks();
+    fetchCategories();
+    fetchAuthors();
+  }, [fetchBooks, fetchCategories, fetchAuthors]);
   const {
     register,
     handleSubmit,

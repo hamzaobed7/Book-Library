@@ -36,6 +36,7 @@ export default function CustomerProfile() {
 
   const { FetechProfile, Profile, currntUser } = useContext(AuthonticationContext);
 
+  useEffect(()=>{FetechProfile()},[FetechProfile])
   const {
     register,
     handleSubmit,

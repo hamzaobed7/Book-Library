@@ -68,8 +68,7 @@ export default function AddAuthor() {
       setOpen(true);
       reset();
     } catch (error) {
-      console.log("ERROR:", error);
-       Setms(error.response?.data.message || error.message);
+      Setms(error.response?.data.message || error.message);
       setcolor("error");
       setOpen(true);
     }

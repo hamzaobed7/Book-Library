@@ -42,8 +42,8 @@ export default function CartPage() {
   const { subtotal, totalItems } = useMemo(() => {
     const totalItems = cartItems.length;
     const subtotal = cartItems.reduce((acc, item) => {
-     const rentalPrice = Number(item.book?.rental_price) || 0;
-    const deposit = Number(item.book?.deposit) || 0;
+      const rentalPrice = Number(item.book?.rental_price) || 0;
+      const deposit = Number(item.book?.deposit) || 0;
       return acc + rentalPrice + deposit;
     }, 0);
 

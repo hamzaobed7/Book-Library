@@ -62,13 +62,13 @@ export default function OutlinedCard({ canDelete, rent, book, handleClickOpen, s
           </Typography>
         </CardContent>
 
-        <CardActions className="card-actions" sx={{ display: "flex" ,justifyItems:"center",alignContent:"space-between"}}>
+        <CardActions className="card-actions" sx={{ display: "flex", justifyItems: "center", alignContent: "space-between" }}>
           <Button className="btn-more">
             <Link to={`/BookDetiles/${book.id}`} style={{ textDecoration: "none", color: "wheat" }}>
               View Details
             </Link>
           </Button>
-          
+
           {rent && (
             <Box sx={{ width: "50%" }}>
               <ShoppingCartCheckoutIcon sx={{ cursor: "pointer", fontSize: "40px", color: book.stock > 0 ? "green" : "red" }} onClick={() => AddtoCart(book.id)} />

@@ -1,6 +1,9 @@
-import { createContext, useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState, useCallback } from "react";
 import api from "../api/axios";
+import { AuthContext } from "../auth/AuthContext";
+
 export const BookContext = createContext();
+
 export default function BookProvider({ children }) {
   const [categories, setCategories] = useState([]);
   const [authors, setAuthors] = useState([]);
@@ -9,73 +12,82 @@ export default function BookProvider({ children }) {
   const [trendBook, SetTrendBook] = useState([]);
   const [hasBook, setHasBook] = useState([]);
   const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    const loadData = async () => {
-      setLoading(true);
-      try {
-        await Promise.all([fetchAuthors(), fetchBooks(), fetchCategories(), fetchStocks(), FetechCategoryHasBook(), FetechTake()]);
-      } catch (error) {
-        console.log("Error data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadData();
-  }, []);
+  const { type } = useContext(AuthContext);
 
-  const FetechTake = async () => {
+  
+  const FetechTake = useCallback(async () => {
     try {
       const response = await api.get("/treandBook");
       SetTrendBook(response.data);
     } catch (error) {
       console.log(error);
     }
-  };
+  }, []);
 
-  const FetechCategoryHasBook = async () => {
+  const FetechCategoryHasBook = useCallback(async () => {
     try {
       const responce = await api.get("/categoryhasbooks");
       setHasBook(responce.data);
     } catch (err) {
       console.log(err);
     }
-  };
+  }, []);
 
-  const fetchCategories = async () => {
+  const fetchCategories = useCallback(async () => {
     try {
       const response = await api.get("/categories");
       setCategories(response.data.data);
     } catch (err) {
       console.error(err);
     }
-  };
+  }, []);
 
-  const fetchBooks = async () => {
+  
+  const fetchBooks = useCallback(async () => {
     try {
       const response = await api.get("/books");
       setBook(response.data.data);
     } catch (error) {
       console.error(error);
     }
-  };
+  }, []);
 
-  const fetchAuthors = async () => {
+  
+  const fetchAuthors = useCallback(async () => {
     try {
       const response = await api.get("/authors");
       setAuthors(response.data.data);
     } catch (err) {
       console.error(err);
     }
-  };
+  }, []);
 
-  const fetchStocks = async () => {
+ 
+  const fetchStocks = useCallback(async () => {
     try {
       const response = await api.get("/remove_frome_remaining");
       setStock(response.data.data);
     } catch (err) {
       console.error(err);
     }
-  };
+  }, []);
+
+ 
+  useEffect(() => {
+    const loadData = async () => {
+      setLoading(true);
+      try {
+        await FetechTake();
+      } catch (error) {
+        console.log("Error data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadData();
+  }, [type, FetechTake]); 
+
   const bookCount = useMemo(() => books.length, [books]);
   const AuthorCount = useMemo(() => authors.length, [authors]);
   const CategoryCount = useMemo(() => categories.length, [categories]);
@@ -99,7 +111,7 @@ export default function BookProvider({ children }) {
       fetchCategories,
       fetchBooks,
     }),
-    [AuthorCount, CategoryCount, categories, Stock, authors, books, loading, bookCount],
+    [AuthorCount, CategoryCount, categories, Stock, authors, books, loading, bookCount, FetechTake, FetechCategoryHasBook, fetchCategories, fetchBooks, fetchAuthors, fetchStocks, trendBook, hasBook],
   );
 
   return <BookContext.Provider value={value}>{children}</BookContext.Provider>;

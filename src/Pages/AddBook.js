@@ -1,14 +1,14 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import "../Css/AddBook.css";
 import SimpleSnackbar from "../Componants/Snakbar";
 import api from "../api/axios";
-import { Box, CircularProgress } from "@mui/material"; 
+import { Box, CircularProgress } from "@mui/material";
 import Button from "@mui/material/Button";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import { BookContext } from './../Context/BookContext';
+import { BookContext } from "./../Context/BookContext";
 const MAX_FILE_SIZE = 2 * 1024 * 1024;
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
@@ -36,9 +36,15 @@ const schema = z.object({
 
 export default function AddBook() {
   const [open, setOpen] = useState(false);
-  const [mes ,SetMes]=useState("")
-  const [isSubmitting, setIsSubmitting] = useState(false); 
-  const { categories = [], authors = [], fetchBooks } = useContext(BookContext);
+  const [mes, SetMes] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { categories = [], authors = [], fetchBooks,fetchCategories,fetchAuthors } = useContext(BookContext);
+  useEffect(()=>{
+    fetchBooks();
+    fetchCategories();
+    fetchAuthors()
+  },[fetchBooks,fetchCategories,fetchAuthors])
+
   const {
     register,
     handleSubmit,
@@ -104,16 +110,16 @@ export default function AddBook() {
       });
 
       setOpen(true);
-      SetMes("Book Added Successfully")
+      SetMes("Book Added Successfully");
       reset();
       if (fetchBooks) {
         fetchBooks();
       }
     } catch (error) {
-      SetMes(error?.response?.data.message)
-      setOpen(true)
+      SetMes(error?.response?.data.message);
+      setOpen(true);
     } finally {
-      setIsSubmitting(false); 
+      setIsSubmitting(false);
     }
   };
 
@@ -172,7 +178,6 @@ export default function AddBook() {
           <Box sx={{ display: "flex", flexDirection: "column", gap: "5px", alignItems: "flex-start" }}>
             <label style={{ fontSize: "14px", color: "#4a5568", textAlign: "left" }}>Book Cover Image:</label>
 
-
             <Box sx={{ display: "flex", alignItems: "center", gap: "15px" }}>
               <Button
                 component="label"
@@ -194,7 +199,6 @@ export default function AddBook() {
                 <input type="file" accept="image/*" {...register("cover")} style={{ display: "none" }} />
               </Button>
 
-   
               {isSubmitting && (
                 <Box sx={{ display: "flex", alignItems: "center", gap: "8px" }}>
                   <CircularProgress size={20} color="primary" />
@@ -203,9 +207,7 @@ export default function AddBook() {
               )}
 
               {!isSubmitting && coverFile && coverFile[0] && (
-                <span style={{ fontSize: "13px", color: "#4a5568", textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap", maxWidth: "200px" }}>
-                  📄 {coverFile[0].name}
-                </span>
+                <span style={{ fontSize: "13px", color: "#4a5568", textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap", maxWidth: "200px" }}>📄 {coverFile[0].name}</span>
               )}
             </Box>
           </Box>
@@ -222,7 +224,7 @@ export default function AddBook() {
           <p style={{ color: "red", fontSize: "13px" }}>{errors.category_id?.message}</p>
 
           <label style={{ display: "block", fontSize: "14px", color: "#4a5568", marginBottom: "5px", textAlign: "left" }}>Select Authors (Hold Ctrl to select multiple):</label>
-          <select  multiple onChange={handleAuthorsChange} className="select-form-author" style={{ height: "100px", width: "100%", padding: "8px" }} disabled={isSubmitting}>
+          <select multiple onChange={handleAuthorsChange} className="select-form-author" style={{ height: "100px", width: "100%", padding: "8px" }} disabled={isSubmitting}>
             {authors.map((author) => (
               <option key={author.id} value={author.id}>
                 {author.first_name ? `${author.first_name} ${author.last_name || ""}` : author.name}
@@ -232,23 +234,23 @@ export default function AddBook() {
           <p style={{ color: "red", fontSize: "13px" }}>{errors.authors?.message}</p>
 
           <br />
-          
-          <button 
-            type="submit" 
+
+          <button
+            type="submit"
             disabled={isSubmitting}
-            style={{ 
-              cursor: isSubmitting ? "not-allowed" : "pointer", 
-              background: isSubmitting ? "#a5b4fc" : "#667eea", 
-              color: "#fff", 
-              border: "none", 
-              padding: "12px", 
-              width: "100%", 
-              borderRadius: "6px", 
+            style={{
+              cursor: isSubmitting ? "not-allowed" : "pointer",
+              background: isSubmitting ? "#a5b4fc" : "#667eea",
+              color: "#fff",
+              border: "none",
+              padding: "12px",
+              width: "100%",
+              borderRadius: "6px",
               fontWeight: "600",
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
-              gap: "10px"
+              gap: "10px",
             }}
           >
             {isSubmitting ? (

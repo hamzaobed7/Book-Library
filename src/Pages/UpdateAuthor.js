@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import "../Css/AddBook.css";
 import SimpleSnackbar from "../Componants/Snakbar";
 import { useForm } from "react-hook-form";
@@ -7,12 +7,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import api from "../api/axios";
 import { BookContext } from "../Context/BookContext";
 
-
 const schema = z.object({
   id: z.union([z.string(), z.number()]),
   first_name: z.string().min(3, "The name is very short").max(30, "The name is very long"),
   last_name: z.string().min(3, "The name is very short").max(30, "The name is very long"),
-  email: z.string().email("Must be a valid Email"), 
+  email: z.string().email("Must be a valid Email"),
   gender: z.enum(["Male", "Female"], { errorMap: () => ({ message: "Please select gender" }) }),
   birth_date: z.coerce.date().refine((date) => date < new Date(), "The date must be in the past"),
   bio: z.string().min(3, "The bio must be greater than 3").max(200, "The bio is very long"),
@@ -22,8 +21,10 @@ export default function UpdateAuthor() {
   const [open, setOpen] = useState(false);
   const [Mes, setmes] = useState("");
   const [color, setcolor] = useState("");
-  const { authors } = useContext(BookContext);
-
+  const { authors, fetchAuthors } = useContext(BookContext);
+  useEffect(() => {
+    fetchAuthors();
+  }, [fetchAuthors]);
   const {
     register,
     handleSubmit,

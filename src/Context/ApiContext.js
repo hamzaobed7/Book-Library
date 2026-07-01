@@ -1,5 +1,6 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import api from "../api/axios";
+import { AuthContext } from "../auth/AuthContext";
 export const DataContext = createContext();
 export default function DataProvider({ children }) {
   const [StockCount, setStockCount] = useState([]);
@@ -7,16 +8,21 @@ export default function DataProvider({ children }) {
   const [count, Setcount] = useState(null);
   const [hasNoBook, setHasNoBook] = useState(null);
   const [loading, setLoading] = useState(false);
-
+  const { type } = useContext(AuthContext);
   useEffect(() => {
     const token = localStorage.getItem("token");
+    if (!token ) return;
+
     const loadData = async () => {
       setLoading(true);
       try {
-        if (token) {
-          await Promise.all([FetechCountOfCart()]);
+        if (type === "customer") {
+          await FetechCountOfCart();
+        } else {
+          await Promise.all([FetechAuthorHasNoBook(), FetechUsersCount(), FetechStockCount()]);
         }
-        await Promise.all([FetechAuthorHasNoBook(), FetechUsersCount(), FetechStockCount()]);
+
+    
       } catch (error) {
         console.log("Error data:", error);
       } finally {
@@ -24,7 +30,7 @@ export default function DataProvider({ children }) {
       }
     };
     loadData();
-  }, []);
+  }, [ type]);
 
   const FetechAuthorHasNoBook = async () => {
     try {

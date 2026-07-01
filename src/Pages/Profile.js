@@ -31,10 +31,7 @@ export default function Profile() {
   const [showCurrent, setShowCurrent] = useState(false);
   const [showNew, setShowNew] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
-
-
   const { currntUser, FetechcurrntUser } = useContext(AuthonticationContext);
-
   const {
     register,
     handleSubmit,

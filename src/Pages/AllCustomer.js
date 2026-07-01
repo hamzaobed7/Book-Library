@@ -1,47 +1,30 @@
 import React, { useContext, useEffect, useState } from "react";
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableContainer, 
-  TableHead, 
-  TableRow, 
-  Paper, 
-  Avatar, 
-  Typography, 
-  Box, 
-  Chip, 
-  TextField, 
-  InputAdornment 
-} from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Avatar, Typography, Box, Chip, TextField, InputAdornment } from "@mui/material";
 
 import SimpleSnackbar from "../Componants/Snakbar";
 
 import EmailIcon from "@mui/icons-material/Email";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-import SearchIcon from "@mui/icons-material/Search"; 
+import SearchIcon from "@mui/icons-material/Search";
 import { AuthonticationContext } from "../Context/AuthonticationContext";
 
 export default function GetAllCustomer() {
-  const { customer } = useContext(AuthonticationContext);
+  const { customer, FetechAllCustomer } = useContext(AuthonticationContext);
   const [opens, setOpens] = useState(false);
-  const [searchTerm, setSearchTerm] = useState(""); 
+  const [searchTerm, setSearchTerm] = useState("");
   const imageBaseUrl = "http://127.0.0.1:8000/storage/customer_images";
+  useEffect(() => {
+    FetechAllCustomer();
+  }, [FetechAllCustomer]);
 
   const filteredCustomers = customer?.filter((c) => {
     const searchLower = searchTerm.toLowerCase();
-    return (
-      c.name?.toLowerCase().includes(searchLower) ||
-      c.user?.email?.toLowerCase().includes(searchLower) ||
-      c.phone?.toString().includes(searchLower)
-    );
+    return c.name?.toLowerCase().includes(searchLower) || c.user?.email?.toLowerCase().includes(searchLower) || c.phone?.toString().includes(searchLower);
   });
 
   return (
     <>
       <Box sx={{ p: { xs: 2, sm: 4 }, backgroundColor: "#f5f7fa", minHeight: "100vh" }}>
-        
-      
         <Box sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" }, justifyContent: "space-between", alignItems: { xs: "stretch", sm: "center" }, mb: 3, gap: 2 }}>
           <Typography
             variant="h4"
@@ -50,8 +33,7 @@ export default function GetAllCustomer() {
               color: "#1a202c",
               fontSize: { xs: "1.8rem", sm: "2.125rem" },
             }}
-          >
-          </Typography>
+          ></Typography>
 
           <TextField
             variant="outlined"
@@ -65,7 +47,7 @@ export default function GetAllCustomer() {
               borderRadius: "8px",
               "& .MuiOutlinedInput-root": {
                 borderRadius: "8px",
-              }
+              },
             }}
             InputProps={{
               startAdornment: (
@@ -101,7 +83,7 @@ export default function GetAllCustomer() {
                   <TableRow key={c.id} hover sx={{ "&:nth-of-type(even)": { backgroundColor: "#f8fafc" }, transition: "0.3s" }}>
                     <TableCell>
                       <Box sx={{ display: "flex", alignItems: "center" }}>
-                        <Avatar sx={{ bgcolor: "#4a90e2", mr: 2 }} src={`${imageBaseUrl}/${c.cover}`} >
+                        <Avatar sx={{ bgcolor: "#4a90e2", mr: 2 }} src={`${imageBaseUrl}/${c.cover}`}>
                           {c.name ? c.name.charAt(0).toUpperCase() : "C"}
                         </Avatar>
                         <Typography sx={{ fontWeight: "500" }}>{c.name}</Typography>
@@ -109,9 +91,7 @@ export default function GetAllCustomer() {
                     </TableCell>
 
                     <TableCell>
-                      <Box sx={{ display: "flex", alignItems: "center", color: "#4a5568" }}>
-                        {c.phone}
-                      </Box>
+                      <Box sx={{ display: "flex", alignItems: "center", color: "#4a5568" }}>{c.phone}</Box>
                     </TableCell>
 
                     <TableCell>

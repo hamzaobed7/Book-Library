@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -27,7 +27,7 @@ export default function GetAllCategory() {
   const [open, setOpen] = useState(false);
   const [opens, setOpens] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
-
+  useEffect(()=>{fetchCategories()},[fetchCategories])
   const handleClickOpen = (id) => {
     setSelectedId(id);
     setOpen(true);

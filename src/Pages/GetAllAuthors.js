@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { 
   Table, 
   TableBody, 
@@ -31,6 +31,7 @@ export default function GetAllAuthors() {
   const [selectedId, setSelectedId] = useState(null);
   const [searchTerm, setSearchTerm] = useState(""); 
 
+  useEffect(()=>{fetchAuthors()},[])
   const handleClickOpen = (id) => {
     setSelectedId(id);
     setOpen(true);
@@ -54,7 +55,7 @@ export default function GetAllAuthors() {
       console.log(error);
     }
   };
-console.log(authors)
+
   const filteredAuthors = authors?.filter((author) => {
     const searchLower = searchTerm.toLowerCase();
     return (

@@ -21,8 +21,9 @@ export default function GetAllBooks({ delet, rent }) {
 
   useEffect(() => {
     const user = localStorage.getItem("user");
+    fetchBooks();
     setUserType(user);
-  }, []);
+  }, [fetchBooks]);
 
   const handleClose = () => setRequest(false);
 

@@ -9,13 +9,10 @@ export default function ProtectedRoute({ allowedRoles }) {
   if (!token) {
     return <Navigate to="/login" replace />;
   }
-
   if (!currntUser || !currntUser.user) {
     return <div>Loading...</div>;
   }
-
 const userType = currntUser.user.type;
-console.log(currntUser.user.type)
 
   if (allowedRoles && !allowedRoles.includes(userType)) {
     return <Navigate to="/HomePage" replace />;
