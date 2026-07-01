@@ -27,11 +27,6 @@ export default function AuthProvider({ children }) {
   };
 
 
-
-
-
-
-  
 useEffect(() => {
   const expiry = localStorage.getItem("token_expiry");
   if (!expiry) return;

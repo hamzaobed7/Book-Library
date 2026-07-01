@@ -48,7 +48,6 @@ export default function ItemsDetails({ openViewModal, handleCloseModal, billId }
     >
       <DialogTitle sx={{ fontWeight: "800", fontSize: "1.3rem", color: "#1a73e8", textAlign: "right" }}>تفاصيل عناصر الفاتورة #{billId}</DialogTitle>
       <Divider sx={{ borderColor: "#e0e0e0", my: 1 }} />
-
       <DialogContent>
         {loading ? (
           <Box sx={{ display: "flex", justifyContent: "center", py: 3 }}>
@@ -62,7 +61,6 @@ export default function ItemsDetails({ openViewModal, handleCloseModal, billId }
           <Grid container spacing={2} dir="rtl">
             {items.map((item, index) => (
               <Grid item xs={12} key={item.id} sx={{ mb: index !== items.length - 1 ? 1 : 0 }}>
-                {/* بطاقة العنصر بخلفية رمادية ناعمة وحواف زرقاء خفيفة عند الحوم */}
                 <Box
                   sx={{
                     p: 2,

@@ -30,7 +30,6 @@ export default function AddAuthor() {
   });
 
   const handleClick = () => setOpen(true);
-
   const handleClose = (event, reason) => {
     if (reason === "clickaway") return;
     setOpen(false);

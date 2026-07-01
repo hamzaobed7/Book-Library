@@ -12,214 +12,194 @@ import Box from "@mui/material/Box";
 import { useContext } from "react";
 import { BookContext } from "../Context/BookContext";
 
-export default function TableStock(){
-    const { books, Stock} = useContext(BookContext);
-  const stockList = Stock ? (Array.isArray(Stock) ? Stock : Stock.data ?? []) : [];
+export default function TableStock() {
+  const { books, Stock } = useContext(BookContext);
+  const stockList = Stock ? (Array.isArray(Stock) ? Stock : (Stock.data ?? [])) : [];
   const recentStockLogs = stockList.slice(-5).reverse();
-return(<>
- <ItemPaper
-      sx={{
-        width: "100%",
-        p: { xs: 2, md: 3 },
-      }}
-    >
-      <Box
+  return (
+    <>
+      <ItemPaper
         sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: { xs: "flex-start", sm: "center" },
-          flexDirection: { xs: "column", sm: "row" },
-          gap: 2,
-          mb: 3,
+          width: "100%",
+          p: { xs: 2, md: 3 },
         }}
       >
-        <Box>
-          <Typography
-            variant="h5"
-            sx={{
-              fontWeight: 800,
-              color: "#1e293b",
-            }}
-          >
-            Recent Stock Movements Log
-          </Typography>
-
-          <Typography
-            variant="body2"
-            sx={{
-              color: "#64748b",
-              mt: 0.5,
-            }}
-          >
-            Real-time history of inventory additions and destructions
-          </Typography>
-        </Box>
-
-        <Chip
-          label={`Total Logs: ${stockList.length}`}
-          color="primary"
+        <Box
           sx={{
-            fontWeight: 700,
-            borderRadius: 2,
-          }}
-        />
-      </Box>
-
-      <TableContainer
-        sx={{
-          maxHeight: 500,
-          overflowX: "auto",
-          borderRadius: 2,
-          border: "1px solid #e2e8f0",
-        }}
-      >
-        <Table
-          stickyHeader
-          aria-label="stock logs table"
-          sx={{
-            minWidth: {
-              xs: 700,
-              sm: 900,
-              md: 1200,
-            },
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: { xs: "flex-start", sm: "center" },
+            flexDirection: { xs: "column", sm: "row" },
+            gap: 2,
+            mb: 3,
           }}
         >
-          <TableHead>
-            <TableRow>
-              <TableCell
-                sx={{
-                  fontWeight: 700,
-                  backgroundColor: "#f8fafc",
-                }}
-              >
-                Book
-              </TableCell>
+          <Box>
+            <Typography
+              variant="h5"
+              sx={{
+                fontWeight: 800,
+                color: "#1e293b",
+              }}
+            >
+              Recent Stock Movements Log
+            </Typography>
 
-              <TableCell
-                sx={{
-                  fontWeight: 700,
-                  backgroundColor: "#f8fafc",
-                }}
-              >
-                Transaction Type
-              </TableCell>
+            <Typography
+              variant="body2"
+              sx={{
+                color: "#64748b",
+                mt: 0.5,
+              }}
+            >
+              Real-time history of inventory additions and destructions
+            </Typography>
+          </Box>
 
-              <TableCell
-                align="center"
-                sx={{
-                  fontWeight: 700,
-                  backgroundColor: "#f8fafc",
-                }}
-              >
-                Quantity
-              </TableCell>
+          <Chip
+            label={`Total Logs: ${stockList.length}`}
+            color="primary"
+            sx={{
+              fontWeight: 700,
+              borderRadius: 2,
+            }}
+          />
+        </Box>
 
-              <TableCell
-                sx={{
-                  fontWeight: 700,
-                  backgroundColor: "#f8fafc",
-                }}
-              >
-                Inventory Target
-              </TableCell>
-            </TableRow>
-          </TableHead>
-
-          <TableBody>
-            {recentStockLogs.length > 0 ? (
-              recentStockLogs.map((log, index) => {
-                const targetBook = books?.find(
-                  (b) => String(b.id) === String(log.book_id)
-                );
-
-                return (
-                  <TableRow
-                    key={log.id || index}
-                    hover
-                    sx={{
-                      transition: "0.2s",
-                    }}
-                  >
-                    <TableCell
-                      sx={{
-                        fontWeight: 600,
-                        color: "#1e293b",
-                      }}
-                    >
-                      {targetBook
-                        ? targetBook.title
-                        : `Book ID: ${log.book_id}`}
-                    </TableCell>
-
-                    <TableCell>
-                      <Chip
-                        size="small"
-                        label={
-                          log.type === "add"
-                            ? "Stock Addition"
-                            : "Stock Destruction"
-                        }
-                        color={
-                          log.type === "add"
-                            ? "success"
-                            : "error"
-                        }
-                        sx={{
-                          fontWeight: 600,
-                        }}
-                      />
-                    </TableCell>
-
-                    <TableCell
-                      align="center"
-                      sx={{
-                        fontWeight: 800,
-                        color:
-                          log.type === "add"
-                            ? "#10b981"
-                            : "#ef4444",
-                      }}
-                    >
-                      {log.type === "add"
-                        ? `+${log.quantity}`
-                        : `-${log.quantity}`}
-                    </TableCell>
-
-                    <TableCell>
-                      <Typography
-                        sx={{
-                          fontWeight: 600,
-                          color:
-                            String(log.remove_from_remaining) === "1"
-                              ? "#4f46e5"
-                              : "#64748b",
-                        }}
-                      >
-                        {String(log.remove_from_remaining) === "1"
-                          ? "Direct Remaining Inventory"
-                          : "General Log Records"}
-                      </Typography>
-                    </TableCell>
-                  </TableRow>
-                );
-              })
-            ) : (
+        <TableContainer
+          sx={{
+            maxHeight: 500,
+            overflowX: "auto",
+            borderRadius: 2,
+            border: "1px solid #e2e8f0",
+          }}
+        >
+          <Table
+            stickyHeader
+            aria-label="stock logs table"
+            sx={{
+              minWidth: {
+                xs: 700,
+                sm: 900,
+                md: 1200,
+              },
+            }}
+          >
+            <TableHead>
               <TableRow>
                 <TableCell
-                  colSpan={4}
-                  align="center"
                   sx={{
-                    py: 5,
-                    color: "#94a3b8",
+                    fontWeight: 700,
+                    backgroundColor: "#f8fafc",
                   }}
                 >
-                  No stock mutation data records available.
+                  Book
+                </TableCell>
+
+                <TableCell
+                  sx={{
+                    fontWeight: 700,
+                    backgroundColor: "#f8fafc",
+                  }}
+                >
+                  Transaction Type
+                </TableCell>
+
+                <TableCell
+                  align="center"
+                  sx={{
+                    fontWeight: 700,
+                    backgroundColor: "#f8fafc",
+                  }}
+                >
+                  Quantity
+                </TableCell>
+
+                <TableCell
+                  sx={{
+                    fontWeight: 700,
+                    backgroundColor: "#f8fafc",
+                  }}
+                >
+                  Inventory Target
                 </TableCell>
               </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </ItemPaper>
-</>)
+            </TableHead>
+
+            <TableBody>
+              {recentStockLogs.length > 0 ? (
+                recentStockLogs.map((log, index) => {
+                  const targetBook = books?.find((b) => String(b.id) === String(log.book_id));
+
+                  return (
+                    <TableRow
+                      key={log.id || index}
+                      hover
+                      sx={{
+                        transition: "0.2s",
+                      }}
+                    >
+                      <TableCell
+                        sx={{
+                          fontWeight: 600,
+                          color: "#1e293b",
+                        }}
+                      >
+                        {targetBook ? targetBook.title : `Book ID: ${log.book_id}`}
+                      </TableCell>
+
+                      <TableCell>
+                        <Chip
+                          size="small"
+                          label={log.type === "add" ? "Stock Addition" : "Stock Destruction"}
+                          color={log.type === "add" ? "success" : "error"}
+                          sx={{
+                            fontWeight: 600,
+                          }}
+                        />
+                      </TableCell>
+
+                      <TableCell
+                        align="center"
+                        sx={{
+                          fontWeight: 800,
+                          color: log.type === "add" ? "#10b981" : "#ef4444",
+                        }}
+                      >
+                        {log.type === "add" ? `+${log.quantity}` : `-${log.quantity}`}
+                      </TableCell>
+
+                      <TableCell>
+                        <Typography
+                          sx={{
+                            fontWeight: 600,
+                            color: String(log.remove_from_remaining) === "1" ? "#4f46e5" : "#64748b",
+                          }}
+                        >
+                          {String(log.remove_from_remaining) === "1" ? "Direct Remaining Inventory" : "General Log Records"}
+                        </Typography>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={4}
+                    align="center"
+                    sx={{
+                      py: 5,
+                      color: "#94a3b8",
+                    }}
+                  >
+                    No stock mutation data records available.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </ItemPaper>
+    </>
+  );
 }

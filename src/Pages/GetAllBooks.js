@@ -70,7 +70,6 @@ export default function GetAllBooks({ delet, rent }) {
     <>
       <div className="page-container">
         <Aside SetCategory={SetCategory} category={category} />
-
         <main className="main-content">
           <header className="content-header">
             <h1 className="title">Book Collection</h1>

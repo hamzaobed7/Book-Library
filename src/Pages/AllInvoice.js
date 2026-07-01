@@ -39,7 +39,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 export default function AllInvoice() {
   const [bills, setBills] = useState([]);
   
-  // 💡 حالات التحكم بالـ Modal والعنصر المختار
+  
   const [openModal, setOpenModal] = useState(false);
   const [selectedBillId, setSelectedBillId] = useState(null);
 

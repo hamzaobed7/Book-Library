@@ -1,5 +1,4 @@
 import { useState, useContext } from "react";
-import { DataContext } from "../Context/ApiContext";
 import api from "../api/axios";
 import { CircularProgress } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -52,7 +51,6 @@ export default function DeleteMultiElement() {
     if (!confirmDelete) return;
 
     setIsDeleting(true);
-
     try {
       const idsToDelete = selectedItems.map((item) => item.id);
       let element = selection === "Author" ? "/deletemulti/author" : "/deletemulti/books";
@@ -65,7 +63,7 @@ export default function DeleteMultiElement() {
       if (selection === "Book" && fetchBooks) fetchBooks();
       if (selection === "Category" && fetchCategories) fetchCategories();
 
-      setSnackbarMessage(`${selection}(s) Deleted Successfully ${<DeleteIcon/>} `);
+      setSnackbarMessage(`Deleted Successfully `);
       setOpen(true);
       setSelectedItems([]);
     } catch (error) {

@@ -20,7 +20,7 @@ function SelectActionCard({ index, name, count, icon }) {
           return prev;
         }
       });
-    }, 50);
+    }, 20);
     return () => {
       clearInterval(interval);
     };
@@ -40,17 +40,11 @@ function SelectActionCard({ index, name, count, icon }) {
         sx={{
           borderRadius: "25px",
           overflow: "hidden",
-
           background: "linear-gradient(135deg,rgb(27, 50, 120),rgb(68, 107, 255))",
-
           color: "white",
-
           boxShadow: "0px 10px 30px rgba(0,0,0,0.3)",
-
           transition: "0.4s",
-
           position: "relative",
-
           "&:hover": {
             transform: "translateY(-10px) scale(1.03)",
             boxShadow: "0px 20px 40px rgba(0,0,0,0.5)",

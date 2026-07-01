@@ -1,4 +1,4 @@
-import { Box, Button,  TextField, Typography } from "@mui/material";
+import { Box, Button, TextField, Typography } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -14,8 +14,8 @@ const schema = z.object({
 
 export default function RequestBook() {
   const [open, setOpen] = useState(false);
-  const [mes,setMes]=useState("")
-  const [color,setcolor]=useState("")
+  const [mes, setMes] = useState("");
+  const [color, setcolor] = useState("");
   const handleClick = () => setOpen(true);
   const handleClose = (event, reason) => {
     if (reason === "clickaway") return;
@@ -63,16 +63,18 @@ export default function RequestBook() {
   const onFormSubmit = async (data) => {
     try {
       const res = await api.post("/book_request", data);
-      setMes(res.data.message)
+      setMes(res.data.message);
+      setOpen(true);
+      setcolor("success");
       handleClick();
-      console.log(res);
+
       reset();
     } catch (error) {
-        const errorMessage = error.response?.data?.message || "Something went wrong";
-        handleClick();
+      const errorMessage = error.response?.data?.message || "Something went wrong";
+      handleClick();
+      setOpen(true);
       setMes(errorMessage);
-      setcolor("error")
-
+      setcolor("error");
     }
   };
 
@@ -118,31 +120,11 @@ export default function RequestBook() {
             gap: 3,
           }}
         >
-          <TextField 
-            {...register("book_title")} 
-            placeholder="Book Name" 
-            sx={inputStyle} 
-            error={!!errors.book_title} 
-          />
-          {errors.book_title && (
-            <Typography sx={{ color: "error.main", fontSize: "16px", mt: -2, width: "70%", textAlign: "left" }}>
-              {errors.book_title.message}
-            </Typography>
-          )}
+          <TextField {...register("book_title")} placeholder="Book Name" sx={inputStyle} error={!!errors.book_title} />
+          {errors.book_title && <Typography sx={{ color: "error.main", fontSize: "16px", mt: -2, width: "70%", textAlign: "left" }}>{errors.book_title.message}</Typography>}
 
-          <TextField 
-            {...register("author_name")} 
-            placeholder="Author Name" 
-            sx={inputStyle} 
-            error={!!errors.author_name} 
-          />
-          {errors.author_name && (
-            <Typography sx={{ color: "error.main", fontSize: "16px", mt: -2, width: "70%", textAlign: "left" }}>
-              {errors.author_name.message}
-            </Typography>
-          )}
-
-          
+          <TextField {...register("author_name")} placeholder="Author Name" sx={inputStyle} error={!!errors.author_name} />
+          {errors.author_name && <Typography sx={{ color: "error.main", fontSize: "16px", mt: -2, width: "70%", textAlign: "left" }}>{errors.author_name.message}</Typography>}
 
           <Button
             type="submit"
@@ -171,12 +153,7 @@ export default function RequestBook() {
         </Box>
       </Box>
 
-      <SimpleSnackbar 
-        message={mes} 
-        handleClose={handleClose} 
-        open={open} 
-        color={color}
-      />
+      <SimpleSnackbar message={mes} handleClose={handleClose} open={open} color={color} />
     </>
   );
 }

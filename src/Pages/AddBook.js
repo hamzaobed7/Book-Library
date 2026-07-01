@@ -110,8 +110,8 @@ export default function AddBook() {
         fetchBooks();
       }
     } catch (error) {
-      console.log("ERROR:", error.response?.data || error.message);
-      SetMes(error.message)
+      SetMes(error?.response?.data.message)
+      setOpen(true)
     } finally {
       setIsSubmitting(false); 
     }

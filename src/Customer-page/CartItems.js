@@ -121,7 +121,7 @@ export const CartItemRow = ({ item, onRemove, isUpdating }) => {
             }}
           />
 
-          <Stack direction="row"  spacing={0.3}>
+          <Stack direction="row" spacing={0.3}>
             <Typography variant="caption" sx={{ fontWeight: 600, color: "text.secondary" }}>
               Rent:
             </Typography>

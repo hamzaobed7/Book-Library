@@ -54,7 +54,7 @@ export default function GetAllAuthors() {
       console.log(error);
     }
   };
-
+console.log(authors)
   const filteredAuthors = authors?.filter((author) => {
     const searchLower = searchTerm.toLowerCase();
     return (
@@ -68,7 +68,6 @@ export default function GetAllAuthors() {
     <>
       <Box sx={{ p: { xs: 2, sm: 4 }, backgroundColor: "#f5f7fa", minHeight: "100vh" }}>
         
-        {/* تنسيق متجاوب يجمع العنوان مع شريط البحث */}
         <Box sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" }, justifyContent: "space-between", alignItems: { xs: "stretch", sm: "center" }, mb: 3, gap: 2 }}>
           <Typography
             variant="h4"

@@ -2,21 +2,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import api from "../api/axios";
 import { useState, useEffect } from "react";
 
-import {
-  Box,
-  Card,
-  Typography,
-  Button,
-  Grid,
-  Avatar,
-  Stack,
-  Divider,
-  CircularProgress,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemIcon,
-} from "@mui/material";
+import { Box, Card, Typography, Button, Grid, Avatar, Stack, Divider, CircularProgress, List, ListItem, ListItemText, ListItemIcon } from "@mui/material";
 
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import PrintIcon from "@mui/icons-material/Print";
@@ -26,10 +12,11 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import StorageIcon from "@mui/icons-material/Storage";
 import AlternateEmailIcon from "@mui/icons-material/AlternateEmail";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
-
+import Rating from "@mui/material/Rating";
 export default function BookDetiles() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [value, setValue] = useState(2);
 
   const [data, setData] = useState(null);
   const [category, setCategory] = useState(null);
@@ -38,9 +25,7 @@ export default function BookDetiles() {
   const getBookdetails = async () => {
     try {
       setLoading(true);
-      const [bookRes] = await Promise.all([
-        api.get(`books/${id}`),
-      ]);
+      const [bookRes] = await Promise.all([api.get(`books/${id}`)]);
 
       setData(bookRes.data?.data ?? bookRes.data);
       setCategory(bookRes.data?.data?.category ?? bookRes.data?.category ?? null);
@@ -80,27 +65,27 @@ export default function BookDetiles() {
   }
 
   return (
-    <Box 
-      sx={{ 
-        p: { xs: 2, md: 4 }, 
-        background: "#f8fafc", 
+    <Box
+      sx={{
+        p: { xs: 2, md: 4 },
+        background: "#f8fafc",
         minHeight: "100vh",
         fontFamily: "'Inter', 'Roboto', 'Segoe UI', sans-serif",
         "@media print": {
           p: 0,
           background: "#fff",
           "nav, .sidebar, aside, header, .no-print": { display: "none !important" },
-          "body, html, #root, main": { background: "#fff !important", p: 0, m: 0, width: "100%" }
-        }
+          "body, html, #root, main": { background: "#fff !important", p: 0, m: 0, width: "100%" },
+        },
       }}
     >
-      <Card 
+      <Card
         className="no-print"
-        sx={{ 
-          mb: 4, 
-          borderRadius: "16px", 
+        sx={{
+          mb: 4,
+          borderRadius: "16px",
           boxShadow: "0 4px 20px rgba(0,0,0,0.02)",
-          border: "1px solid #e2e8f0"
+          border: "1px solid #e2e8f0",
         }}
       >
         <Box sx={{ p: 3, display: "flex", flexDirection: { xs: "column", sm: "row" }, justifyContent: "space-between", alignItems: { xs: "flex-start", sm: "center" }, gap: 2 }}>
@@ -118,7 +103,15 @@ export default function BookDetiles() {
               startIcon={<ArrowBackIcon />}
               variant="outlined"
               onClick={() => navigate(-1)}
-              sx={{ borderRadius: "10px", borderColor: "#cbd5e1", color: "#64748b", textTransform: "none", fontWeight: "600", fontFamily: "inherit", "&:hover": { borderColor: "#94a3b8", bgcolor: "#f8fafc" } }}
+              sx={{
+                borderRadius: "10px",
+                borderColor: "#cbd5e1",
+                color: "#64748b",
+                textTransform: "none",
+                fontWeight: "600",
+                fontFamily: "inherit",
+                "&:hover": { borderColor: "#94a3b8", bgcolor: "#f8fafc" },
+              }}
             >
               Back
             </Button>
@@ -127,7 +120,15 @@ export default function BookDetiles() {
               startIcon={<PrintIcon />}
               variant="contained"
               onClick={() => window.print()}
-              sx={{ borderRadius: "10px", bgcolor: "#6366f1", textTransform: "none", fontWeight: "600", fontFamily: "inherit", boxShadow: "0 4px 12px rgba(99,102,241,0.2)", "&:hover": { bgcolor: "#4f46e5" } }}
+              sx={{
+                borderRadius: "10px",
+                bgcolor: "#6366f1",
+                textTransform: "none",
+                fontWeight: "600",
+                fontFamily: "inherit",
+                boxShadow: "0 4px 12px rgba(99,102,241,0.2)",
+                "&:hover": { bgcolor: "#4f46e5" },
+              }}
             >
               Print PDF
             </Button>
@@ -136,7 +137,7 @@ export default function BookDetiles() {
       </Card>
 
       <Grid container spacing={3} sx={{ "@media print": { display: "block" } }}>
-        <Grid item xs={12} md={7} lg={8} sx={{ "@media print": { width: "100%", mb: 4 } }}>
+        <Grid xs={12} md={7} lg={8} sx={{ "@media print": { width: "100%", mb: 4 } }}>
           <Card sx={{ borderRadius: "16px", border: "1px solid #e2e8f0", boxShadow: "0 4px 20px rgba(0,0,0,0.02)" }}>
             <Box sx={{ p: 4 }}>
               <Typography variant="h6" fontWeight="700" color="#0f172a" mb={3} sx={{ fontFamily: "inherit" }}>
@@ -145,22 +146,37 @@ export default function BookDetiles() {
 
               <List disablePadding>
                 <ListItem sx={{ px: 0, py: 2 }}>
-                  <ListItemIcon sx={{ minWidth: 40 }}><MenuBookIcon sx={{ color: "#6366f1" }} /></ListItemIcon>
-                  <ListItemText 
-                    primary={<Typography variant="body2" color="text.secondary" fontWeight="500" sx={{ fontFamily: "inherit" }}>International Standard Book Number (ISBN)</Typography>}
-                    secondary={<Typography variant="body1" component="span" fontWeight="600" color="#1e293b" sx={{ mt: 0.5, display: "block", fontFamily: "inherit" }}>{data.ISBN}</Typography>}
+                  <ListItemIcon sx={{ minWidth: 40 }}>
+                    <MenuBookIcon sx={{ color: "#6366f1" }} />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={
+                      <Typography variant="body2" color="text.secondary" fontWeight="500" sx={{ fontFamily: "inherit" }}>
+                        International Standard Book Number (ISBN)
+                      </Typography>
+                    }
+                    secondary={
+                      <Typography variant="body1" component="span" fontWeight="600" color="#1e293b" sx={{ mt: 0.5, display: "block", fontFamily: "inherit" }}>
+                        {data.ISBN}
+                      </Typography>
+                    }
                   />
                 </ListItem>
                 <Divider component="li" />
 
-                {/* 1. تم تعديل المكون هنا ليتحول إلى div بدلاً من إحداث تداخل li معقد */}
                 <Box sx={{ listStyleType: "none", py: 1 }}>
                   <Grid container spacing={2}>
-                    <Grid item xs={12} sm={6}>
+                    <Grid xs={12} sm={6}>
                       <Box sx={{ display: "flex", alignItems: "center", py: 2 }}>
-                        <ListItemIcon sx={{ minWidth: 40 }}><FolderOpenIcon sx={{ color: "#3b82f6" }} /></ListItemIcon>
-                        <ListItemText 
-                          primary={<Typography variant="body2" color="text.secondary" fontWeight="500" sx={{ fontFamily: "inherit" }}>Category</Typography>}
+                        <ListItemIcon sx={{ minWidth: 40 }}>
+                          <FolderOpenIcon sx={{ color: "#3b82f6" }} />
+                        </ListItemIcon>
+                        <ListItemText
+                          primary={
+                            <Typography variant="body2" color="text.secondary" fontWeight="500" sx={{ fontFamily: "inherit" }}>
+                              Category
+                            </Typography>
+                          }
                           secondary={
                             <Typography variant="body1" component="span" fontWeight="700" color="#3b82f6" sx={{ mt: 0.5, display: "block", fontFamily: "inherit" }}>
                               {category ? category.name : `Category #${data.category_id}`}
@@ -169,12 +185,22 @@ export default function BookDetiles() {
                         />
                       </Box>
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+                    <Grid xs={12} sm={6}>
                       <Box sx={{ display: "flex", alignItems: "center", py: 2 }}>
-                        <ListItemIcon sx={{ minWidth: 40 }}><LocalOfferIcon sx={{ color: "#10b981" }} /></ListItemIcon>
-                        <ListItemText 
-                          primary={<Typography variant="body2" color="text.secondary" fontWeight="500" sx={{ fontFamily: "inherit" }}>Retail Price</Typography>}
-                          secondary={<Typography variant="h6" component="span" fontWeight="700" color="#10b981" sx={{ mt: 0.5, display: "block", fontFamily: "inherit" }}>${data.rental_price}</Typography>}
+                        <ListItemIcon sx={{ minWidth: 40 }}>
+                          <LocalOfferIcon sx={{ color: "#10b981" }} />
+                        </ListItemIcon>
+                        <ListItemText
+                          primary={
+                            <Typography variant="body2" color="text.secondary" fontWeight="500" sx={{ fontFamily: "inherit" }}>
+                              Retail Price
+                            </Typography>
+                          }
+                          secondary={
+                            <Typography variant="h6" component="span" fontWeight="700" color="#10b981" sx={{ mt: 0.5, display: "block", fontFamily: "inherit" }}>
+                              ${data.rental_price}
+                            </Typography>
+                          }
                         />
                       </Box>
                     </Grid>
@@ -183,18 +209,22 @@ export default function BookDetiles() {
                 <Divider component="li" />
 
                 <ListItem sx={{ px: 0, py: 2 }}>
-                  <ListItemIcon sx={{ minWidth: 40 }}><StorageIcon sx={{ color: "#f59e0b" }} /></ListItemIcon>
-                  <ListItemText 
-                    // 2. تم إضافة السطر التالي لمنع تداخل div بداخل p في التنسيق الداخلي
-                    secondaryTypographyProps={{ component: "div" }}
-                    primary={<Typography variant="body2" color="text.secondary" fontWeight="500" sx={{ fontFamily: "inherit" }}>Stock Availability Status</Typography>}
+                  <ListItemIcon sx={{ minWidth: 40 }}>
+                    <StorageIcon sx={{ color: "#f59e0b" }} />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={
+                      <Typography variant="body2" color="text.secondary" fontWeight="500" sx={{ fontFamily: "inherit" }}>
+                        Stock Availability Status
+                      </Typography>
+                    }
                     secondary={
                       <Stack direction="row" alignItems="center" spacing={2} sx={{ mt: 0.5 }}>
                         <Typography variant="body1" component="span" fontWeight="600" color="#1e293b" sx={{ fontFamily: "inherit" }}>
-                          {data.total_copies} Total Copies 
+                          {data.total_copies} Total Copies
                         </Typography>
                         <Typography variant="body1" component="span" fontWeight="600" color="#475569" sx={{ fontFamily: "inherit" }}>
-                          {data.stock} Stock Copies 
+                          {data.stock} Stock Copies
                         </Typography>
                       </Stack>
                     }
@@ -203,10 +233,20 @@ export default function BookDetiles() {
                 <Divider component="li" />
 
                 <ListItem sx={{ px: 0, py: 2 }}>
-                  <ListItemIcon sx={{ minWidth: 40 }}><CalendarMonthIcon sx={{ color: "#ec4899" }} /></ListItemIcon>
-                  <ListItemText 
-                    primary={<Typography variant="body2" color="text.secondary" fontWeight="500" sx={{ fontFamily: "inherit" }}>Publication Date</Typography>}
-                    secondary={<Typography variant="body1" component="span" fontWeight="600" color="#1e293b" sx={{ mt: 0.5, display: "block", fontFamily: "inherit" }}>{data.published_at}</Typography>}
+                  <ListItemIcon sx={{ minWidth: 40 }}>
+                    <CalendarMonthIcon sx={{ color: "#ec4899" }} />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={
+                      <Typography variant="body2" color="text.secondary" fontWeight="500" sx={{ fontFamily: "inherit" }}>
+                        Publication Date
+                      </Typography>
+                    }
+                    secondary={
+                      <Typography variant="body1" component="span" fontWeight="600" color="#1e293b" sx={{ mt: 0.5, display: "block", fontFamily: "inherit" }}>
+                        {data.published_at}
+                      </Typography>
+                    }
                   />
                 </ListItem>
               </List>
@@ -223,7 +263,7 @@ export default function BookDetiles() {
           </Card>
         </Grid>
 
-        <Grid item xs={12} md={5} lg={4} sx={{ "@media print": { width: "100%" } }}>
+        <Grid xs={12} md={5} lg={4} sx={{ "@media print": { width: "100%" } }}>
           <Card sx={{ borderRadius: "16px", border: "1px solid #e2e8f0", boxShadow: "0 4px 20px rgba(0,0,0,0.02)", height: "100%" }}>
             <Box sx={{ p: 4 }}>
               <Typography variant="h6" fontWeight="700" color="#0f172a" mb={3} sx={{ fontFamily: "inherit" }}>
@@ -233,15 +273,15 @@ export default function BookDetiles() {
               <Stack spacing={3}>
                 {data.authors?.length ? (
                   data.authors.map((author) => (
-                    <Box 
-                      key={author.id} 
-                      sx={{ 
-                        p: 2.5, 
-                        borderRadius: "12px", 
-                        backgroundColor: "#f8fafc", 
+                    <Box
+                      key={author.id}
+                      sx={{
+                        p: 2.5,
+                        borderRadius: "12px",
+                        backgroundColor: "#f8fafc",
                         border: "1px solid #f1f5f9",
                         transition: "all 0.2s",
-                        "&:hover": { boxShadow: "0 4px 12px rgba(0,0,0,0.01)" }
+                        "&:hover": { boxShadow: "0 4px 12px rgba(0,0,0,0.01)" },
                       }}
                     >
                       <Stack direction="row" spacing={2} alignItems="center" mb={1.5}>
@@ -254,11 +294,13 @@ export default function BookDetiles() {
                           </Typography>
                           <Stack direction="row" alignItems="center" spacing={0.5} sx={{ color: "text.secondary", mt: 0.2 }}>
                             <AlternateEmailIcon sx={{ fontSize: "13px" }} />
-                            <Typography variant="caption" sx={{ fontFamily: "inherit" }}>{author.email}</Typography>
+                            <Typography variant="caption" sx={{ fontFamily: "inherit" }}>
+                              {author.email}
+                            </Typography>
                           </Stack>
                         </Box>
                       </Stack>
-                      
+
                       {author.bio && (
                         <>
                           <Divider sx={{ my: 1, borderStyle: "dashed" }} />
@@ -277,6 +319,20 @@ export default function BookDetiles() {
               </Stack>
             </Box>
           </Card>
+        </Grid>
+        <Grid xs={4}>
+          
+          <Box sx={{flexDirection:'column',width:"100%",padding:"100px",borderRadius:"10px", border: "1px solid #e2e8f0", boxShadow: "0 4px 20px rgba(0,0,0,0.02)", height: "300px",margin:'10px auto'}}>
+            <Typography  variant="h3" >Rating Now</Typography>
+            <Rating
+              name="simple-controlled"
+              value={value}
+              sx={{fontSize:'40px'}}
+              onChange={(event, newValue) => {
+                setValue(newValue);
+              }}
+            />
+          </Box>
         </Grid>
       </Grid>
     </Box>
